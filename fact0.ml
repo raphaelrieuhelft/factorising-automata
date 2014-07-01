@@ -4,7 +4,7 @@
 
 let n = ref 6 
 let p_cheat = ref 0.1
-let p_ag = ref 0.02
+let p_ag = ref 0.1
 
 let nrows = ref ((!n/2)+1)
 let ncols = ref ((!n)-1)
@@ -24,7 +24,8 @@ exception Conflict
 let try_cheat () = Random.float 1. < !p_cheat
 let try_ag () = Random.float 1. < !p_ag
 
-let safe i j (t, rows, cols) = rows.(i)=0||cols.(j)=0
+let safego i j (t, rows, cols) (newrow, newcol) = rows.(i)<=(1-newrow)||cols.(j)<=(1-newcol)
+let safestay i j (t,rows, cols) = rows.(i)=0||cols.(j)=0
 
 (* add et rm ajoutent ou retirent un ZERO de la case donnée en argument*)
 
@@ -47,33 +48,50 @@ let rm i j (t, rows, cols) = match t.(i).(j) with
 let shift_down i j ((t, rows, cols) as b) = 
   
   if (i<(!nrows-1))&&(j<(!ncols -1))&&(t.(i).(j)=0)&&(t.(i+1).(j+1)=1)
-    &&((not (safe i j b)) || try_ag ())
-    &&((safe (i+1) (j+1) b)||try_cheat())
+    &&((not (safestay i j b)) || try_ag ())
+    &&((safego (i+1) (j+1) b (0,0))||try_cheat())
    
   then (rm i j b; add (i+1) (j+1) b; incr moves; true)
   else false
 
 let shift_up i j ((t, rows, cols) as b) =  
-  if (i>0)&&(j>0)&&(t.(i).(j)=0)&&(t.(i-1).(j-1)=1) &&((not (safe i j b)) || try_ag ())
-  &&((safe (i-1) (j-1) b || try_cheat ()))
+  if (i>0)&&(j>0)&&(t.(i).(j)=0)&&(t.(i-1).(j-1)=1) &&((not (safestay i j b)) || try_ag ())
+  &&((safego (i-1) (j-1) b (0,0)|| try_cheat ()))
    
   then (rm i j b; add (i-1) (j-1) b; incr moves; true)
   else false
 
-let sum i j ((t, rows, cols) as b)= 
+let sum_down i j ((t, rows, cols) as b)= 
   if (i>0)&&(j<(!ncols-1))&&(t.(i).(j)=0)&&(t.(i-1).(j)=1)&&(t.(i).(j+1)=1)&&
-    (safe (i-1) (j) b ||try_cheat ())&& ((not (safe i j b)) || try_ag ())&& (safe i (j+1) b|| try_cheat ())
+    (safego (i-1) (j) b (0,1) ||try_cheat ())&& ((not (safestay i j b)) || try_ag ())&& 
+    (safego i (j+1) b (1,0) || try_cheat ())
    
   then (rm i j b; add i (j+1) b; add (i-1) j b; incr moves; true)
   else false
   
-let split i j ((t, rows, cols) as b)=
+let split_up i j ((t, rows, cols) as b)=
   if
   (i>0)&&(j<(!ncols-1))&&(t.(i).(j)=1)&&(t.(i-1).(j)=0)&&(t.(i).(j+1)=0)&&((not
-  (safe i (j+1) b && safe (i-1) j b)) || try_ag ())
-    &&(safe i j b|| try_cheat ())
+  (safestay i (j+1) b && safestay (i-1) j b)) || try_ag ())
+    &&(safego i j b (1,1) (*false*)|| try_cheat ())
     
   then (add i j b; rm i (j+1) b; rm (i-1) j b; incr moves; true)
+  else false
+
+let split_down i j ((t,rows,cols) as b) = 
+  if
+    (i<(!nrows-1))&&(j<(!nrows-2))&&(t.(i).(j)=1)&&(t.(i).(j+1)=0)&&(t.(i+1).(j+2)=0)&&
+      ((not ((safestay i (j+1) b)&&(safestay (i+1) (j+2) b)))|| try_ag ()) &&
+      (safego i j b (1,0)|| try_cheat ())
+  then (add i j b; rm i (j+1) b; rm (i+1) (j+2) b; incr moves; true)
+  else false
+
+let sum_up i j ((t, rows, cols) as b) =
+  if 
+    (i<(!nrows-1))&&(j<(!nrows-2))&&(t.(i).(j)=0)&&(t.(i).(j+1)=1)&&(t.(i+1).(j+2)=1)&&
+      (safego i (j+1) b (1,0) || try_cheat ())&& (safego (i+1) (j+2) b (0,0) || try_cheat ()) && 
+      ((not (safestay i j b)) || try_ag ())
+  then (rm i j b; add i (j+1) b; add (i+1) (j+2) b; incr moves; true)
   else false
 
 let update ((t, rows, cols) as b)  =
@@ -81,9 +99,10 @@ let update ((t, rows, cols) as b)  =
   match Random.int 6 with
   |0 -> shift_down i j b
   |1 -> shift_up i j b
-  |3 -> split i j b
-  |_ -> sum i j b
-    
+  |2 -> split_up i j b
+  |3 -> split_down i j b
+  |4 -> sum_up i j b
+  |_ -> sum_down i j b
 
 (*entiers représentés par des listes de 0/1 : bit de poids faible en premier*)
 
@@ -153,10 +172,14 @@ let check_fini ((t, rows, cols) as b) =
   let rec aux i j = 
     if i >= !nrows then true
     else if j >= !ncols then aux (i+1) 0
-    else (safe i j b || t.(i).(j)=1)&&(aux i (j+1))
+    else (safestay i j b || t.(i).(j)=1)&&(aux i (j+1))
   in
   aux 0 0
-      
+
+let read_result (t, rows, cols) = 
+  let f = function 0 -> 0 |_-> 1 in
+  (int_of_list (List.map f (List.rev (Array.to_list cols)))), 
+  (int_of_list (List.map f  (Array.to_list rows)))
 
 let find_factors target = 
   let (t, rows, cols) = init target in
@@ -165,11 +188,16 @@ let find_factors target =
     if (!time mod 10000000 = 0) then (Unix.sleep 1; print_board t);
     incr time;
     if (update (t, rows, cols))
-	then (
+	then ((*print_board t; Unix.sleep 1;*)
 	  if (check_fini (t, rows, cols))
 	  then (fini := true;  print_board t)
 	)
-  done
+  done;
+  read_result (t,rows, cols)
  
+let print_facts target (a,b) = 
+  Format.printf "%d = %d * %d@." target a b
+    
 							     
-let () = find_factors 561
+let _ = Arg.parse [] (fun s -> let n = (int_of_string s) in
+			       print_facts n (find_factors n)) ""

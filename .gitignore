@@ -11,3 +11,6 @@
 *.byte
 *.native
 _build/
+*~
+*#
+#*
