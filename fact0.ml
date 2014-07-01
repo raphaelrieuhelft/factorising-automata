@@ -3,8 +3,8 @@
   doit être un 1 dans une solution : les 0 tâchent d'éviter ces cases*)
 
 let n = ref 6 
-let p_cheat = ref 0.1
-let p_ag = ref 0.1
+let p_cheat = ref 1.
+let p_ag = ref 0.05
 
 let nrows = ref ((!n/2)+1)
 let ncols = ref ((!n)-1)
@@ -182,6 +182,7 @@ let read_result (t, rows, cols) =
   (int_of_list (List.map f  (Array.to_list rows)))
 
 let find_factors target = 
+  Format.printf "Looking for factors of %d with p_ag = %f, p_cheat = %f@." target !p_ag !p_cheat;
   let (t, rows, cols) = init target in
   let fini = ref false in
   while (not !fini) do
@@ -198,6 +199,9 @@ let find_factors target =
 let print_facts target (a,b) = 
   Format.printf "%d = %d * %d@." target a b
     
+let options = ["-ag", Arg.Float (fun f -> p_ag:=f), "sets p_ag"; 
+	       "-ch", Arg.Float (fun f -> p_cheat :=f), "sets p_ag"]
+
 							     
-let _ = Arg.parse [] (fun s -> let n = (int_of_string s) in
+let _ = Arg.parse options (fun s -> let n = (int_of_string s) in
 			       print_facts n (find_factors n)) ""
