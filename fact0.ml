@@ -11,7 +11,7 @@ let ncols = ref ((!n)-1)
 
 let time = ref 0
 let moves = ref 0
-
+let samplesize = ref 30
 
 
 exception Conflict
@@ -41,8 +41,9 @@ let rm i j (t, rows, cols) = match t.(i).(j) with
 
 
 (*SHIFT_DOWN/UP : déplacer un 0 vers le haut ou le bas en l'échangeant
-  avec un 1; SUM : sommer deux 1 voisins verticalement; SPLIT :
-  changer un 1 en deux 1 sur sa droite*)
+  avec un 1; SUM_UP/DOWN : sommer deux 1 voisins verticalement, mettre
+  le résultat en face de celui du haut/bas; SPLIT_UP/DOWN :
+  décomposer un 1 en deux 1 sur sa droite et en haut/bas*)
 
 
 let shift_down i j ((t, rows, cols) as b) = 
@@ -182,26 +183,38 @@ let read_result (t, rows, cols) =
   (int_of_list (List.map f  (Array.to_list rows)))
 
 let find_factors target = 
-  Format.printf "Looking for factors of %d with p_ag = %f, p_cheat = %f@." target !p_ag !p_cheat;
+ (* Format.printf "Looking for factors of %d with p_ag = %f, p_cheat = %f@." target !p_ag !p_cheat;*)
   let (t, rows, cols) = init target in
   let fini = ref false in
   while (not !fini) do
-    if (!time mod 10000000 = 0) then (Unix.sleep 1; print_board t);
+    (*if (!time mod 1000000 = 0) then (Unix.sleep 1; print_board t);*)
     incr time;
     if (update (t, rows, cols))
-	then ((*print_board t; Unix.sleep 1;*)
+	then ((*print_board t; Unix.sleep 3;*)
 	  if (check_fini (t, rows, cols))
-	  then (fini := true;  print_board t)
+	  then (fini := true(*;  print_board t*))
 	)
   done;
   read_result (t,rows, cols)
  
 let print_facts target (a,b) = 
   Format.printf "%d = %d * %d@." target a b
-    
+
+
+let print_time target (a,b) = Format.printf "%d@." !time
+
 let options = ["-ag", Arg.Float (fun f -> p_ag:=f), "sets p_ag"; 
-	       "-ch", Arg.Float (fun f -> p_cheat :=f), "sets p_ag"]
+	       "-ch", Arg.Float (fun f -> p_cheat :=f), "sets p_ag";
+	      "-s", Arg.Set_int samplesize, "sets sample size"]
 
 							     
+(*let _ = Arg.parse options (fun s -> let n = (int_of_string s) in
+	
+
+		       print_facts n (find_factors n)) ""*)
 let _ = Arg.parse options (fun s -> let n = (int_of_string s) in
-			       print_facts n (find_factors n)) ""
+				    
+				    for i = 1 to !samplesize do
+				      print_time n (find_factors n)
+				    done
+) ""
