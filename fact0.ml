@@ -1,6 +1,7 @@
 (*On préserve comme invariant que la somme des lignes est juste, on
   déplace les zéros. Une case sur la même ligne et colonne qu'un 1
   doit être un 1 dans une solution : les 0 tâchent d'éviter ces cases*)
+open Unix
 
 let n = ref 6 
 let p_cheat = ref 1.
@@ -12,8 +13,8 @@ let ncols = ref ((!n)-1)
 let time = ref 0
 let moves = ref 0
 let samplesize = ref 30
-
-
+let ff = ref Format.std_formatter
+let timeout = ref 10000000
 exception Conflict
 
 (*rows contient le nombre de 1 dans chque ligne et cols dans chaque
@@ -188,6 +189,7 @@ let find_factors target =
   let fini = ref false in
   while (not !fini) do
     (*if (!time mod 1000000 = 0) then (Unix.sleep 1; print_board t);*)
+    if !time > !timeout then fini := true;
     incr time;
     if (update (t, rows, cols))
 	then ((*print_board t; Unix.sleep 3;*)
@@ -201,20 +203,38 @@ let print_facts target (a,b) =
   Format.printf "%d = %d * %d@." target a b
 
 
-let print_time target (a,b) = Format.printf "%d@." !time
+let print_time target (a,b) = 
+  if !time > !timeout then Format.fprintf !ff "timeout@." else
+  Format.fprintf !ff "%d@." !time
 
 let options = ["-ag", Arg.Float (fun f -> p_ag:=f), "sets p_ag"; 
 	       "-ch", Arg.Float (fun f -> p_cheat :=f), "sets p_ag";
-	      "-s", Arg.Set_int samplesize, "sets sample size"]
+	      "-s", Arg.Set_int samplesize, "sets sample size";
+	      "-timeout", Arg.Set_int timeout, "sets timeout"]
 
 							     
 (*let _ = Arg.parse options (fun s -> let n = (int_of_string s) in
 	
 
 		       print_facts n (find_factors n)) ""*)
+
+
+let stats n = 
+  for i = 1 to !samplesize do
+    print_time n (find_factors n)
+  done
+
+let iter nmin nmax = 
+  for i = nmin to nmax do
+    let fd = Unix.openfile (string_of_int i) [O_WRONLY; O_CREAT] 0o640
+    in
+    ff:=Format.formatter_of_out_channel (out_channel_of_descr fd);
+    stats i
+  done
+
+
+
 let _ = Arg.parse options (fun s -> let n = (int_of_string s) in
-				    
-				    for i = 1 to !samplesize do
-				      print_time n (find_factors n)
-				    done
-) ""
+				    iter n (n+4)
+)
+ ""
