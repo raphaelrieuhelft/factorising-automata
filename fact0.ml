@@ -188,13 +188,13 @@ let find_factors target =
   let (t, rows, cols) = init target in
   let fini = ref false in
   while (not !fini) do
-    (*if (!time mod 1000000 = 0) then (Unix.sleep 1; print_board t);*)
+    if (!time mod 1000000 = 0) then (Unix.sleep 1; print_board t);
     if !time > !timeout then fini := true;
     incr time;
     if (update (t, rows, cols))
 	then ((*print_board t; Unix.sleep 3;*)
 	  if (check_fini (t, rows, cols))
-	  then (fini := true(*;  print_board t*))
+	  then (fini := true;  print_board t)
 	)
   done;
   read_result (t,rows, cols)
@@ -233,8 +233,7 @@ let iter nmin nmax =
   done
 
 
-
 let _ = Arg.parse options (fun s -> let n = (int_of_string s) in
-				    iter n (n+4)
+				   print_facts n  (find_factors n)
 )
  ""
