@@ -82,7 +82,7 @@ let split_up i j ((t, rows, cols) as b)=
 
 let split_down i j ((t,rows,cols) as b) = 
   if
-    (i<(!nrows-1))&&(j<(!nrows-2))&&(t.(i).(j)=1)&&(t.(i).(j+1)=0)&&(t.(i+1).(j+2)=0)&&
+    (i<(!nrows-1))&&(j<(!ncols-2))&&(t.(i).(j)=1)&&(t.(i).(j+1)=0)&&(t.(i+1).(j+2)=0)&&
       ((not ((safestay i (j+1) b)&&(safestay (i+1) (j+2) b)))|| try_ag ()) &&
       (safego i j b (1,0)|| try_cheat ())
   then (add i j b; rm i (j+1) b; rm (i+1) (j+2) b; incr moves; true)
@@ -90,7 +90,7 @@ let split_down i j ((t,rows,cols) as b) =
 
 let sum_up i j ((t, rows, cols) as b) =
   if 
-    (i<(!nrows-1))&&(j<(!nrows-2))&&(t.(i).(j)=0)&&(t.(i).(j+1)=1)&&(t.(i+1).(j+2)=1)&&
+    (i<(!nrows-1))&&(j<(!ncols-2))&&(t.(i).(j)=0)&&(t.(i).(j+1)=1)&&(t.(i+1).(j+2)=1)&&
       (safego i (j+1) b (1,0) || try_cheat ())&& (safego (i+1) (j+2) b (0,0) || try_cheat ()) && 
       ((not (safestay i j b)) || try_ag ())
   then (rm i j b; add i (j+1) b; add (i+1) (j+2) b; incr moves; true)

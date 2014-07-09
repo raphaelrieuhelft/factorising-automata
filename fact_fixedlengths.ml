@@ -14,7 +14,7 @@ let time = ref 0
 let moves = ref 0
 let samplesize = ref 30
 let ff = ref Format.std_formatter
-let timeout = ref 10000000
+let timeout = ref 100000000
 exception Conflict
 
 (*rows contient le nombre de 1 dans chque ligne et cols dans chaque
@@ -91,7 +91,7 @@ let split_up i j ((t, rows, cols) as b)=
 
 let split_down i j ((t,rows,cols) as b) = 
   if
-    (i<(!nrows-1))&&(j<(!nrows-2))
+    (i<(!nrows-1))&&(j<(!ncols-2))
     &&(not ((corner i j)||(corner i (j+1))||(corner (i+1) (j+2)))) 
     &&(t.(i).(j)=1)&&(t.(i).(j+1)=0)&&(t.(i+1).(j+2)=0)&&
       ((not ((safestay i (j+1) b)&&(safestay (i+1) (j+2) b)))|| try_ag ()) &&
@@ -101,7 +101,7 @@ let split_down i j ((t,rows,cols) as b) =
 
 let sum_up i j ((t, rows, cols) as b) =
   if 
-    (i<(!nrows-1))&&(j<(!nrows-2))
+    (i<(!nrows-1))&&(j<(!ncols-2))
     &&(not ((corner i j)||(corner i (j+1))||(corner (i+1) (j+2))))
     &&(t.(i).(j)=0)&&(t.(i).(j+1)=1)&&(t.(i+1).(j+2)=1)&&
       (safego i (j+1) b (1,0) || try_cheat ())&& (safego (i+1) (j+2) b (0,0) || try_cheat ()) && 
@@ -257,8 +257,8 @@ let find_factors target rows cols  =
   let (t, rows, cols) = init target rows cols in
   let fini = ref false in
   while (not !fini) do
-    if (!time mod 100000 = 0) then (Unix.sleep 1; print_board t);
-    if !time > !timeout then fini := true;
+    if (!time mod 1000000 = 0) then (Unix.sleep 1; print_board t);
+    (*if !time > !timeout then fini := true;*)
     incr time;
     if (update (t, rows, cols))
 	then ((*print_board t; Unix.sleep 3;*)
