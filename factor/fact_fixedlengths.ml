@@ -252,10 +252,13 @@ let find_factors target rows cols  =
  (* Format.printf "Looking for factors of %d with p_ag = %f, p_cheat =
  %f@." target !p_ag !p_cheat;*)
   if target mod 2 = 0 then (2, target/2)
-  else if target mod 3 = 0 then (3, target/3)
+  else if target mod 3 = 0 then (3, target/3) 
+  else if Isprime.isprime target 100 then (1, target)
   else 
   let (t, rows, cols) = init target rows cols in
   let fini = ref false in
+  if (check_fini (t, rows, cols))
+  then (fini := true;  print_board t);
   while (not !fini) do
     if (!time mod 1000000 = 0) then (Unix.sleep 1; print_board t);
     (*if !time > !timeout then fini := true;*)
@@ -269,7 +272,11 @@ let find_factors target rows cols  =
   read_result (t,rows, cols)
  
 let print_facts target (a,b) = 
-  Format.printf "%d = %d * %d@." target a b
+  if a = 1 
+  then
+    Format.printf "%d is prime@." target
+  else
+    Format.printf "%d = %d * %d@." target a b
 
 
 let print_time target (a,b) = 
