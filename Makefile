@@ -6,7 +6,7 @@ OCAMLBUILD=ocamlbuild -classic-display \
 TARGET=native
 
 example:
-	$(OCAMLBUILD) fact_fixedlengths.$(TARGET)
+	$(OCAMLBUILD) fact_sigs.$(TARGET)
 
 
 clean:
