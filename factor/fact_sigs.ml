@@ -20,7 +20,8 @@ let ff = ref Format.std_formatter
 let timeout = ref 100000000
 exception Conflict
 
-
+let ag_count = ref 0
+let ag_ok = ref 5
 
 (*rows contient le nombre de 1 dans chque ligne et cols dans chaque
   colonne (diagonale si on tient compte des retenues) *)
@@ -42,7 +43,14 @@ let get_neighbors i j =
     
 
 let try_cheat () = Random.float 1. < !p_cheat
-let try_ag () = Random.float 1. < !p_ag
+let try_ag () = if Random.float 1. < !p_ag then
+    begin
+      (*Format.printf "try_ag, count = %d, time = %d@." !ag_count !time;*)
+      if !ag_count >= (!ag_ok) 
+      then true 
+      else (incr ag_count; false) 
+    end
+  else false
 
 let forall t f =
   let rec aux i =
@@ -148,13 +156,15 @@ let update ((t, sigs) as b)  =
   let s = get_neighbors i j in
   Cset.iter (update_sig (i,j)) s;
  (* if !sigs_only then false else*)
-  match Random.int 6 with
-  |0 -> shift_down i j b
-  |1 -> shift_up i j b
-  |2 -> split_up i j b
-  |3 -> split_down i j b
-  |4 -> sum_up i j b
-  |_ -> sum_down i j b
+  let aux () =  match Random.int 6 with
+    |0 -> shift_down i j b
+    |1 -> shift_up i j b
+    |2 -> split_up i j b
+    |3 -> split_down i j b
+    |4 -> sum_up i j b
+    |_ -> sum_down i j b
+  in
+  if aux () then (ag_count:=0; true) else false
 
 let print_spaces k =
   for i = 1 to k do 
@@ -306,6 +316,15 @@ let read_result t =
   (int_of_list  (Array.to_list col))
 
 
+let copy_matrix m =
+  let l = Array.length m in
+    if l = 0 then m else
+      let result = Array.make l m.(0) in
+        for i = 0 to l - 1 do
+           result.(i) <- Array.copy m.(i)
+        done;
+        result
+
 
 let find_factors target rows cols  = 
  (* Format.printf "Looking for factors of %d with p_ag = %f, p_cheat =
@@ -329,7 +348,20 @@ let find_factors target rows cols  =
 	  then (fini := true; (*sigs_only:=true ;*) print_board t; print_safe (t,sigs))
 	)
   done;
-  
+  let u = copy_matrix t in
+  let pf = ref true in
+  while true do
+    (*if (!time mod 1000000 = 0) then (Unix.sleep 1; print_board t;
+				      print_safe (t,sigs));*)
+    incr time;
+    if not !pf 
+    then begin
+      if (update (t,sigs))&&(forall t (fun t i -> t.(i)=u.(i)))
+      then (pf:=true; Format.printf "retour à t = %d@." !time) end
+    else
+      if (update (t,sigs))&& not (forall t (fun t i -> t.(i)=u.(i)))
+      then (pf := false; Format.printf "départ à t = %d@." !time)
+  done;
   read_result t
  
 let print_facts target (a,b) = 
