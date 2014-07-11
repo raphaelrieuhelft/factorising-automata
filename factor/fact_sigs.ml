@@ -12,10 +12,15 @@ let ncols = ref 4
 
 let time = ref 0
 let moves = ref 0
+
+let sigs_only = ref false
+
 let samplesize = ref 30
 let ff = ref Format.std_formatter
 let timeout = ref 100000000
 exception Conflict
+
+
 
 (*rows contient le nombre de 1 dans chque ligne et cols dans chaque
   colonne (diagonale si on tient compte des retenues) *)
@@ -31,7 +36,7 @@ let dir (i1,j1) (i2,j2) =
 
 let get_neighbors i j = 
   List.fold_left 
-    (fun s (a,b) -> if (i+a>0&&i+a<(!nrows)&&j+b>0&&j+b>(!ncols))
+    (fun s (a,b) -> if (i+a>=0 && i+a <(!nrows) && j+b>=0 &&j+b<(!ncols))
       then Cset.add  (i+a,j+b) s else s) Cset.empty 
     [(1,0); (0,1); (-1,0); (0,-1)]
     
@@ -50,7 +55,9 @@ let safego i j (t, sigs) (i2,j2) =
   let d = dir (i2,j2) (i,j) in
   forall sigs.(i2).(j2) (fun t i -> i=d || not t.(i))
 
-let safestay i j (t,sigs) = forall sigs.(i).(j) (fun t i -> not t.(i)) 
+let safestay i j (t,sigs) = (not (sigs.(i).(j).(0) ||
+				    sigs.(i).(j).(2)))|| 
+  (not (sigs.(i).(j).(1) || sigs.(i).(j).(3)))
 
 (* add et rm ajoutent ou retirent un ZERO de la case donnée en argument*)
 
@@ -138,8 +145,9 @@ let update ((t, sigs) as b)  =
   in
     
   let i,j = (Random.int !nrows, Random.int !ncols) in
-
-  Cset.iter (update_sig (i,j)) (get_neighbors i j);
+  let s = get_neighbors i j in
+  Cset.iter (update_sig (i,j)) s;
+ (* if !sigs_only then false else*)
   match Random.int 6 with
   |0 -> shift_down i j b
   |1 -> shift_up i j b
@@ -167,7 +175,19 @@ let print_board t  =
   done;
   Format.printf "\n@."
 
-
+let print_safe (t,sigs) =
+  Format.printf "Time %d, moves %d : @." !time !moves; 
+  for i = 0 to !nrows-1 do
+    let kgauche = !nrows-(1+i) in
+    let kdroite = !nrows-(1+kgauche) in
+    print_spaces kgauche;
+    for j = 0 to !ncols-1 do
+      Format.printf "%c " (if safestay i j (t, sigs) then 'o' else 'X')
+    done;
+    print_spaces kdroite;
+    Format.printf"@."
+  done;
+  Format.printf "\n@."
 
 (*entiers représentés par des listes de 0/1 : bit de poids faible en premier*)
  
@@ -258,6 +278,7 @@ let init target rows cols = (* target : nombre à factoriser*)
   done;
   time :=0;
   moves:=0;
+  sigs_only:=false;
   t, sigs
 
 
@@ -298,15 +319,17 @@ let find_factors target rows cols  =
   if (check_fini t)
   then (fini := true;  print_board t);
   while (not !fini) do
-    if (!time mod 1000000 = 0) then (Unix.sleep 1; print_board t);
+    if (!time mod 1000000 = 0) then (Unix.sleep 1; print_board t;
+				     print_safe (t,sigs));
     (*if !time > !timeout then fini := true;*)
     incr time;
     if (update (t, sigs))
 	then ((*print_board t; Unix.sleep 3;*)
 	  if (check_fini t)
-	  then (fini := true;  print_board t)
+	  then (fini := true; (*sigs_only:=true ;*) print_board t; print_safe (t,sigs))
 	)
   done;
+  
   read_result t
  
 let print_facts target (a,b) = 
