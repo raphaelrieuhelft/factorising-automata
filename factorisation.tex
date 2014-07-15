@@ -1,0 +1,143 @@
+\documentclass[11pt, openany]{article}
+\usepackage{pstricks,pstricks-add,pst-math,pst-xkey}
+\usepackage[frenchb]{babel}
+%\usepackage{slashbox}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb,amstext}
+%\usepackage{comment}
+\usepackage[utf8]{inputenc}
+\usepackage[OT1]{fontenc}
+\usepackage{pgf,tikz}
+\usepackage{pgfplots}
+\usepackage{floatpag}
+\usepgfmodule{shapes}
+\usetikzlibrary{arrows,patterns}
+\usepackage[ps]{skak}
+\usepackage{chessboard}
+\newcounter{moncompteur}
+\newtheorem{q}[moncompteur]{ \textbf{Question}}{}
+\newtheorem{prop}[moncompteur]{ \textbf{Proposition}}{}
+\newtheorem{df}[moncompteur]{ \textbf{Définition}}{}
+\newtheorem{rem}[moncompteur]{ \textbf{Remarque}}{}
+\newtheorem{theo}[moncompteur]{ \textbf{Théorème}}{}
+\newtheorem{conj}[moncompteur]{ \textbf{Conjecture}}{}
+\newtheorem{cor}[moncompteur]{ \textbf{Corollaire}}{}
+\newtheorem{lm}[moncompteur]{ \textbf{Lemme}}{}
+%\newtheorem{nota}[moncompteur]{ \textbf{Notation}}{}
+%\newtheorem{conv}[moncompteur]{ \textbf{Convention}}{}
+\newtheorem{exa}[moncompteur]{ \textbf{Exemple}}{}
+\newtheorem{ex}[moncompteur]{ \textbf{Exercice}}{}
+%\newtheorem{app}[moncompteur]{ \textbf{Application}}{}
+%\newtheorem{prog}[moncompteur]{ \textbf{Algorithme}}{}
+%\newtheorem{hyp}[moncompteur]{ \textbf{Hypothèse}}{}
+\newenvironment{dem}{\noindent\textbf{Preuve}\\}{\flushright$\blacksquare$\\}
+\newcommand{\cg }{[\kern-0.15em [}
+\newcommand{\cd}{]\kern-0.15em]}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\K}{\mathbb{K}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\U}{\mathbb{U}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\B}{\mathbb{B}}
+\newcommand{\card}{\mathrm{card}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\pgfplotsset{compat=1.8}
+\newcommand{\La}{\mathcal{L}}
+\newcommand{\Ne}{\mathcal{N}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\Ss}{\textsc{safestay}}
+\newcommand{\Sg}{\textsc{safego}}
+\newcommand{\M}{\textsc{move}}
+\newcommand{\E}{\mathcal{E}}
+\newcommand{\V}{\mathcal V}
+\setlength{\parindent}{0pt}
+
+
+
+
+\begin{document}
+\floatpagestyle{plain}
+\renewcommand{\labelitemi}{$\bullet$}
+
+\title{Multiplication binaire et factorisation}
+\date{}
+\author{}
+\maketitle
+
+
+
+\section*{Position du problème}
+
+
+On cherche un système dynamique discret qui, étant donné un entier non-premier, trouve un de ses diviseurs. On se base sur la multiplication binaire. En effet, on observe qu'une matrice à coefficients dans $\{0,1\}$ peut s'interpréter comme une multiplication binaire si ses lignes non-nulles sont égales entre elles, comme illustré dans la figure $1$. Les colonnes non-nulles sont alors aussi égales entre elles, et les deux facteurs de la multiplication sont alors lisibles, en base $2$, sur les lignes non-nulles pour l'un, et les colonnes non-nulles lues de bas en haut pour l'autre. Si on pose leur multiplication, toujours en base $2$, on retrouve en effet la matrice de départ, décalée par les retenues (cf. Figure $1$).
+
+
+
+\begin{figure}[h]
+\centering
+\begin{minipage}[]{0.25\linewidth}
+
+\begin{tabular}{cccc}
+1&0&1&1\\
+0&0&0&0\\
+1&0&1&1\\
+1&0&1&1\\
+\end{tabular}
+
+\end{minipage}
+\quad
+\begin{minipage}[]{0.4\linewidth}
+
+
+\begin{tabular}{lllllllll|c}
+&&&&&1&0&1&1&$\times$\\
+\hline
+&&&&&1&0&1&1&1\\
++&&&&0&0&0&0&.&0 \\
++&&&1&0&1&1&.&.&1\\
++&&1&0&1&1&.&.&.&1\\
+\hline
+&1&0&0&0&1&1&1&1&\\
+\end{tabular}
+\end{minipage}
+\caption{La matrice de gauche s'interprète comme la multiplication de $11$ ($1011$ horizontalement) par $13$ ($1101$ verticalement, de haut en bas).}
+\end{figure}
+
+Par ailleurs, étant donné une matrice $M$ à coefficients dans $\{0,1\}$, on pose $\sigma(M)$ l'entier obtenu en sommant ses lignes décalées par des retenues (cf. Figure 2). Si $M$ représente une multiplication, $\sigma$ est par construction le produit. 
+
+\begin{figure}[]
+\centering
+\begin{minipage}[]{0.3\linewidth}
+$M=$
+\begin{tabular}{cccc}
+1&1&0&1\\
+0&0&1&1\\
+1&0&0&1\\
+\end{tabular}
+\end{minipage}
+\quad
+\begin{minipage}[]{0.6\linewidth}
+$\sigma(M)=$
+\begin{tabular}{llllllll}
+&&&&1&1&0&1\\
++&&&0&0&1&1&.\\
++&&1&0&0&1&.&.\\
+\hline
+&&1&1&0&1&1&1\\
+\end{tabular}
+$=63$
+\end{minipage}
+\caption{Exemple de calcul de $\sigma$.}
+
+\end{figure}
+
+L'idée est donc de partir d'une matrice à coefficients dans $\{0,1\}$ pour laquelle $\sigma$ vaut le nombre qu'on cherche à factoriser, et de lui appliquer des transformations qui conservent $\sigma$ jusqu'à atteindre une matrice qui représente une multiplication.
+
+
+
+
+
+
+\end{document}
