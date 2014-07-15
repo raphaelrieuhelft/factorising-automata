@@ -15,7 +15,7 @@ let moves = ref 0
 
 let sigs_only = ref false
 
-let samplesize = ref 30
+let samplesize = ref 50
 let ff = ref Format.std_formatter
 let timeout = ref 100000000
 exception Conflict
@@ -29,10 +29,10 @@ module Cset = Set.Make (struct type t = (int*int) let compare = compare end)
 
 let dir (i1,j1) (i2,j2) = 
   match (i1-i2,j1-j2) with
-  |(1,0)->0
-  |(0,1)->1
-  |(-1,0)->2
-  |(0,-1)->3
+  |(n,0) when n > 0 ->0
+  |(0,n) when n > 0 ->1
+  |(n,0) when n < 0 ->2
+  |(0,n) when n < 0 ->3
   |_->(-1)
 
 let get_neighbors i j = 
@@ -43,7 +43,9 @@ let get_neighbors i j =
     
 
 let try_cheat () = Random.float 1. < !p_cheat
-let try_ag () = if Random.float 1. < !p_ag then
+let try_ag () = Random.float 1. < !p_ag
+
+(*let try_ag () = if Random.float 1. < !p_ag then
     begin
       (*Format.printf "try_ag, count = %d, time = %d@." !ag_count !time;*)
       if !ag_count >= (!ag_ok) 
@@ -51,7 +53,7 @@ let try_ag () = if Random.float 1. < !p_ag then
       else (incr ag_count; false) 
     end
   else false
-
+*)
 let forall t f =
   let rec aux i =
     if i = Array.length t then true
@@ -83,11 +85,76 @@ let rm i j (t, sigs) = match t.(i).(j) with
   le résultat en face de celui du haut/bas; SPLIT_UP/DOWN :
   décomposer un 1 en deux 1 sur sa droite et en haut/bas*)
 
+
+(*rand_diag : choisit un élément de même poids que i j différent de
+  lui (même colonne en comptant les retenues) *)
+
+
 let corner i j = ((i,j)=(0,0))||((i,j)=(0,!ncols-1))
   ||((i,j)=(!nrows-1, 0))||((i,j)=(!nrows-1,!ncols-1))
   (*en fait (0, ncols-1) inutile : conserver la somme implique
     conserver la parité*)
 
+let in_bounds i j =
+  i>=0&&i<(!nrows)&&j>=0&&j<(!ncols)
+
+let rand_diag i j =
+  if corner i j then (i,j) (*pas grave : la règle échouera*)
+  else
+  let ofsmin = - (min i j) in (*inclus*)
+  let ofsmax = min (!nrows - i) (!ncols - j) in (*exclu*)
+  try (
+  let ofs = if ofsmax-ofsmin=1 then 0 else (Random.int (ofsmax - (1+ ofsmin))) + ofsmin in
+  let ofs = if ofs = 0 then ofsmax-1 else ofs in
+
+  assert (in_bounds (i+ofs) (j+ofs));
+  (i+ofs, j+ofs)
+  ) with _ -> (
+     Format.printf "failed with i=%d,j=%d, ofsmin=%d, ofsmax=%d@." i j ofsmin ofsmax; 
+     failwith "fail" )
+	
+(*rand_next_diag : choisit un élément sur la colonne de droite de i j
+  (en comptant les retenues) *)
+
+let rand_next_diag i j = 
+  let ofs = (min i (j+1)) +1 in
+  assert (not (corner i j));
+  try
+  rand_diag (i-ofs) (j+1-ofs)
+  with _-> (
+    Format.printf "failed next_diag with i=%d, j=%d@." i j; failwith "fail2")
+      
+
+
+let shift i j ((t,sigs) as b) =
+  let (i1,j1) = rand_diag i j in
+  if (not ((corner i j)||(corner i1 j1)))&&t.(i).(j)=0&&(t.(i1).(j1)=1)
+  &&((not (safestay i j b)) || try_ag ())
+  && ((safego i j b (i1,j1)) || try_cheat ())
+  then (rm i j b; add i1 j1 b; incr moves; true)
+  else false
+    
+let sum i j ((t,sigs) as b) = 
+  let (i1,j1) = rand_next_diag i j in
+  let (i2,j2) = rand_diag i1 j1 in
+  if (not ((corner i j)||(corner i1 j1)||(corner i2 j2)))&&(t.(i).(j)=0)
+    && (t.(i1).(j1)=1)&&(t.(i2).(j2)=1)
+    && ((not (safestay i j b))||try_ag ())
+    && ((safego i j b (i1,j1) && safego i j b (i2,j2))||try_cheat ())
+  then (rm i j b; add i1 j1 b; add i2 j2 b; incr moves; true)
+  else false
+
+let split i j ((t,sigs) as b) = 
+  let (i1,j1) = rand_next_diag i j in
+  let (i2,j2) = rand_diag i1 j1 in
+  if (not ((corner i j)||(corner i1 j1)||(corner i2 j2)))&&(t.(i).(j)=1)
+    && (t.(i1).(j1)=0)&&(t.(i2).(j2)=0)
+    && ((not ((safestay i1 j1 b)&&(safestay i2 j2 b)))||try_ag())
+    &&((safego i1 j1 b (i,j) && safego i2 j2 b (i,j))||try_cheat ())
+  then (add i j b; rm i1 j1 b; rm i2 j2 b; incr moves; true)
+  else false
+
+(*
 let shift_down i j ((t, sigs) as b) = 
   
   if (i<(!nrows-1))&&(j<(!ncols -1))&&(not ((corner i j)||(corner
@@ -104,6 +171,9 @@ let shift_up i j ((t, sigs) as b) =
    
   then (rm i j b; add (i-1) (j-1) b; incr moves; true)
   else false
+
+
+
 
 let sum_down i j ((t, sigs) as b)= 
   if (i>0)&&(j<(!ncols-1))
@@ -145,6 +215,10 @@ let sum_up i j ((t, sigs) as b) =
       ((not (safestay i j b)) || try_ag ())
   then (rm i j b; add i (j+1) b; add (i+1) (j+2) b; incr moves; true)
   else false
+*)
+
+  
+
 
 let update ((t, sigs) as b)  =
   let update_sig (i,j) (i1,j1) =
@@ -156,15 +230,13 @@ let update ((t, sigs) as b)  =
   let s = get_neighbors i j in
   Cset.iter (update_sig (i,j)) s;
  (* if !sigs_only then false else*)
-  let aux () =  match Random.int 6 with
-    |0 -> shift_down i j b
-    |1 -> shift_up i j b
-    |2 -> split_up i j b
-    |3 -> split_down i j b
-    |4 -> sum_up i j b
-    |_ -> sum_down i j b
-  in
-  if aux () then (ag_count:=0; true) else false
+  if corner i j then false else
+    match Random.int 3 with
+    |0 -> shift i j b
+    |1 -> split i j b
+    |_ -> sum i j b
+ 
+  (*if aux () then (ag_count:=0; true) else false*)
 
 let print_spaces k =
   for i = 1 to k do 
@@ -338,17 +410,19 @@ let find_factors target rows cols  =
   if (check_fini t)
   then (fini := true;  print_board t);
   while (not !fini) do
-    if (!time mod 1000000 = 0) then (Unix.sleep 1; print_board t;
-				     print_safe (t,sigs));
+   (* if (!time mod 1000000 = 0) then (Unix.sleep 1; print_board t;
+				     print_safe (t,sigs));*)
     (*if !time > !timeout then fini := true;*)
     incr time;
     if (update (t, sigs))
 	then ((*print_board t; Unix.sleep 3;*)
 	  if (check_fini t)
-	  then (fini := true; (*sigs_only:=true ;*) print_board t; print_safe (t,sigs))
+	  then (fini := true; (*sigs_only:=true ;*) (*print_board t;
+						      print_safe
+						      (t,sigs) *))
 	)
   done;
-  let u = copy_matrix t in
+(*  let u = copy_matrix t in
   let pf = ref true in
   while true do
     (*if (!time mod 1000000 = 0) then (Unix.sleep 1; print_board t;
@@ -361,7 +435,7 @@ let find_factors target rows cols  =
     else
       if (update (t,sigs))&& not (forall t (fun t i -> t.(i)=u.(i)))
       then (pf := false; Format.printf "départ à t = %d@." !time)
-  done;
+  done;*)
   read_result t
  
 let print_facts target (a,b) = 
@@ -388,7 +462,10 @@ let options = ["-ag", Arg.Float (fun f -> p_ag:=f), "sets p_ag";
 		       print_facts n (find_factors n)) ""*)
 
 
-let stats n rows cols = 
+let stats n rows cols =
+  let fd = Unix.openfile ((string_of_int n)^","^(string_of_int
+  rows)^","^(string_of_int cols)) [O_WRONLY; O_CREAT] 0o640 in
+  ff:=Format.formatter_of_out_channel (out_channel_of_descr fd);
   for i = 1 to !samplesize do
     print_time n (find_factors n rows cols)
   done
@@ -401,6 +478,10 @@ let iter nmin nmax =
     stats i
   done*)
 
-
+(*
 let _ = Arg.parse options (fun _ -> ()) "";
   Scanf.scanf  "%d %d %d" (fun n r c -> print_facts n (find_factors n r c))
+*)
+
+let _ = Arg.parse options (fun _ -> ()) "";
+  Scanf.scanf "%d %d %d" stats
