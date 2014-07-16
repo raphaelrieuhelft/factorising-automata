@@ -71,7 +71,7 @@
 \section*{Position du problème}
 
 
-On cherche un système dynamique discret qui, étant donné un entier non-premier, trouve un de ses diviseurs. On se base sur la multiplication binaire. En effet, on observe qu'une matrice à coefficients dans $\{0,1\}$ peut s'interpréter comme une multiplication binaire si ses lignes non-nulles sont égales entre elles, comme illustré dans la figure $1$. Les colonnes non-nulles sont alors aussi égales entre elles, et les deux facteurs de la multiplication sont alors lisibles, en base $2$, sur les lignes non-nulles pour l'un, et les colonnes non-nulles lues de bas en haut pour l'autre. Si on pose leur multiplication, toujours en base $2$, on retrouve en effet la matrice de départ, décalée par les retenues (cf. Figure $1$).
+On cherche un système dynamique discret qui, étant donné un entier non-premier, trouve un de ses diviseurs non-triviaux. On se base sur la multiplication binaire. En effet, on observe qu'une matrice à coefficients dans $\{0,1\}$ peut s'interpréter comme une multiplication binaire si ses lignes non-nulles sont égales entre elles, comme illustré dans la figure $1$. Les colonnes non-nulles sont alors aussi égales entre elles, et les deux facteurs de la multiplication sont alors lisibles, en base $2$, sur les lignes non-nulles pour l'un, et de bas en haut sur les colonnes non-nulles pour l'autre. Si on pose leur multiplication, toujours en base $2$, on retrouve en effet la matrice de départ, décalée par les retenues (cf. Figure $1$).
 
 
 
@@ -127,7 +127,7 @@ $\sigma(M)=$
 \hline
 &&1&1&0&1&1&1\\
 \end{tabular}
-$=63$
+$=55$
 \end{minipage}
 \caption{Exemple de calcul de $\sigma$.}
 
@@ -135,9 +135,69 @@ $=63$
 
 L'idée est donc de partir d'une matrice à coefficients dans $\{0,1\}$ pour laquelle $\sigma$ vaut le nombre qu'on cherche à factoriser, et de lui appliquer des transformations qui conservent $\sigma$ jusqu'à atteindre une matrice qui représente une multiplication.
 
+\section*{Un algorithme}
+
+Soit $n$ le nombre de chiffres en base $2$ du nombre composé $N$ dont on cherche un diviseur non-trivial. On se donne une matrice $M$ de taille $ n-1 \times \lceil \frac{n}{2}\rceil$ telle que $\sigma(M)=N$. Pour tous $a$ et $b$ différents de $1$ et $N$, et tels que $N = ab$, $a$ ou $b$ est de taille inférieure à $\lceil\frac{n}{2}\rceil$ et l'autre est de taille inférieure à $n-1$, on peut donc représenter leur multiplication sur une matrice de la taille de $M$.
+
+Une formulation équivalente de l'égalité des lignes non-nulles est qu'un coefficient situé sur la même ligne qu'un 1 et sur la même colonne qu'un 1 vaut nécessairement 1 dans une matrice qui représente une multiplication. On va donc appliquer aléatoirement des règles conservant $\sigma$, en privilégiant les mouvements qui retirent les zéros de telles cases. Dans la suite, on dira qu'une case est \emph{sûre} s'il n'y a pas de $1$ sur la même ligne ou s'il n'y en a pas sur la même colonne, et \emph{dangereuse} s'il y a à la fois un $1$ sur la même ligne et un sur la même colonne.
+
+On se donne donc un ensemble $\Gamma$ de six transformations locales qui conservent $\sigma$. Elles sont représentées sur la figure $3$. 
 
 
+\begin{figure}
+\centering
+\begin{tabular}{cc}
+1& \\
+ &0\\
+\end{tabular}
+$\longleftrightarrow$
+\begin{tabular}{cc}
+0& \\
+ &1\\
+\end{tabular}
 
+\bigskip
+
+\begin{tabular}{cc}
+0& \\
+1&0\\
+\end{tabular}
+$\longleftrightarrow$
+\begin{tabular}{cc}
+1& \\
+0&1\\
+\end{tabular}
+
+\bigskip
+
+\begin{tabular}{ccc}
+0&1&\\
+&&1\\
+\end{tabular}
+$\longleftrightarrow$
+\begin{tabular}{ccc}
+1&0&\\
+&&0\\
+\end{tabular}
+\caption{Transformations locales préservant $\sigma$.}
+\end{figure}
+
+Pour diriger les zéros vers les cases sûres, on voudrait n'effectuer que des mouvements qui sortent un zéro d'une case dangereuse, mais cette restriction est trop forte : il existe alors des situations bloquées, la figure $4$ en donne un exemple. Il est donc nécessaire d'autoriser au moins certains mouvements qui ne sont pas directement utiles en ce sens, pour permettre d'autres mouvements par la suite.
+
+\begin{figure}
+\centering
+\begin{tabular}{cccccccc}
+0&1&0&0&1&1&0&\textbf 0\\
+0&\textbf 0&0&0&1&1&0&1\\
+0&\textbf 0&0&0&1&1&0&1\\
+0&0&0&0&0&0&0&0\\
+0&\textbf 0&0&0&1&1&0&1\\
+\end{tabular}
+
+
+\caption{Exemple de situation bloquée si on interdit les mouvements ne déplaçant pas les zéros menacés (indiqués en gras) : aucune des règles de la Figure $3$ ne s'applique à eux.}
+
+\end{figure}
 
 
 \end{document}

@@ -184,12 +184,12 @@ let read_result (t, rows, cols) =
   (int_of_list (List.map f  (Array.to_list rows)))
 
 let find_factors target = 
- (* Format.printf "Looking for factors of %d with p_ag = %f, p_cheat = %f@." target !p_ag !p_cheat;*)
+  Format.printf "Looking for factors of %d with p_ag = %f, p_cheat = %f@." target !p_ag !p_cheat;
   let (t, rows, cols) = init target in
   let fini = ref false in
   while (not !fini) do
     if (!time mod 1000000 = 0) then (Unix.sleep 1; print_board t);
-    if !time > !timeout then fini := true;
+    (*if !time > !timeout then fini := true;*)
     incr time;
     if (update (t, rows, cols))
 	then ((*print_board t; Unix.sleep 3;*)
