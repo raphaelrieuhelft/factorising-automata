@@ -53,9 +53,8 @@
 \newcommand{\E}{\mathcal{E}}
 \newcommand{\V}{\mathcal V}
 \setlength{\parindent}{0pt}
-
-
-
+\newcommand{\myrightleftarrows}[1]{\mathrel{\substack{\xrightarrow{#1} \\[-.6ex] \xleftarrow{#1}}}}
+\newcommand{\longrightleftarrows}{\myrightleftarrows{\rule{1cm}{0cm}}}
 
 \begin{document}
 \floatpagestyle{plain}
@@ -139,65 +138,83 @@ L'idée est donc de partir d'une matrice à coefficients dans $\{0,1\}$ pour laq
 
 Soit $n$ le nombre de chiffres en base $2$ du nombre composé $N$ dont on cherche un diviseur non-trivial. On se donne une matrice $M$ de taille $ n-1 \times \lceil \frac{n}{2}\rceil$ telle que $\sigma(M)=N$. Pour tous $a$ et $b$ différents de $1$ et $N$, et tels que $N = ab$, $a$ ou $b$ est de taille inférieure à $\lceil\frac{n}{2}\rceil$ et l'autre est de taille inférieure à $n-1$, on peut donc représenter leur multiplication sur une matrice de la taille de $M$.
 
-Une formulation équivalente de l'égalité des lignes non-nulles est qu'un coefficient situé sur la même ligne qu'un 1 et sur la même colonne qu'un 1 vaut nécessairement 1 dans une matrice qui représente une multiplication. On va donc appliquer aléatoirement des règles conservant $\sigma$, en privilégiant les mouvements qui retirent les zéros de telles cases. Dans la suite, on dira qu'une case est \emph{sûre} s'il n'y a pas de $1$ sur la même ligne ou s'il n'y en a pas sur la même colonne, et \emph{dangereuse} s'il y a à la fois un $1$ sur la même ligne et un sur la même colonne.
+Formellement, on pose $\La=\cg 1, n-1 \cd \times \cg 1, \lceil\frac{n}{2}\rceil\cd$ l'ensemble des cases de la matrice, et $\E=\{0,1\}^\La$ l'ensemble des configurations. Pour tout $x \in \E$, $(i,j)\in\La$, on note $x_{i,j}$ le coefficient $(i,j)$ de la matrice $x$. 
 
-On se donne donc un ensemble $\Gamma$ de six transformations locales qui conservent $\sigma$. Elles sont représentées sur la figure $3$. 
+On se donne également un ensemble $\Gamma \subset \E^{\E\times\La}$ de transformations locales qui conservent $\sigma$. Elles sont représentées sur la figure 3.
+
+%On se donne donc un ensemble $\Gamma$ de six transformations locales qui conservent $\sigma$. Elles sont représentées sur la figure $3$. Plus 
 
 
 \begin{figure}
 \centering
+\[
 \begin{tabular}{cc}
-1& \\
+\textbf 1& \\
  &0\\
 \end{tabular}
-$\longleftrightarrow$
+\mathrel{\mathop{\longrightleftarrows}^{\mathrm{R1}}_{\mathrm{R2}}}
 \begin{tabular}{cc}
-0& \\
+\textbf 0& \\
  &1\\
 \end{tabular}
+\]
 
-\bigskip
 
+\[
 \begin{tabular}{cc}
 0& \\
-1&0\\
+\textbf 1&0\\
 \end{tabular}
-$\longleftrightarrow$
+\mathrel{\mathop{\longrightleftarrows}^{\mathrm{R3}}_{\mathrm{R4}}}
 \begin{tabular}{cc}
 1& \\
-0&1\\
+\textbf 0&1\\
 \end{tabular}
+\]
 
-\bigskip
-
+\[
 \begin{tabular}{ccc}
-0&1&\\
-&&1\\
-\end{tabular}
-$\longleftrightarrow$
-\begin{tabular}{ccc}
-1&0&\\
+\textbf 1&0&\\
 &&0\\
 \end{tabular}
+\mathrel{\mathop{\longrightleftarrows}^{\mathrm{R5}}_{\mathrm{R6}}}
+\begin{tabular}{ccc}
+\textbf 0&1&\\
+&&1\\
+\end{tabular}
+\]
+
 \caption{Transformations locales préservant $\sigma$.}
 \end{figure}
 
-Pour diriger les zéros vers les cases sûres, on voudrait n'effectuer que des mouvements qui sortent un zéro d'une case dangereuse, mais cette restriction est trop forte : il existe alors des situations bloquées, la figure $4$ en donne un exemple. Il est donc nécessaire d'autoriser au moins certains mouvements qui ne sont pas directement utiles en ce sens, pour permettre d'autres mouvements par la suite.
+
+%À chaque pas de temps, on choisit au hasard une case et une transformation de $\Gamma$, et on décide si on applique ou non la transformation.
+
+
+Une formulation équivalente de l'égalité des lignes non-nulles est qu'un coefficient situé sur la même ligne qu'un 1 et sur la même colonne qu'un 1 vaut nécessairement 1 dans une matrice qui représente une multiplication. On va donc appliquer aléatoirement des règles conservant $\sigma$, en privilégiant les mouvements qui retirent les zéros de telles cases. Dans la suite, on dira qu'une case est \emph{sûre} s'il n'y a pas de $1$ sur la même ligne ou s'il n'y en a pas sur la même colonne, et \emph{dangereuse} s'il y a à la fois un $1$ sur la même ligne et un sur la même colonne.
+
+Pour diriger les zéros vers les cases sûres, on voudrait n'effectuer que des mouvements qui sortent un zéro d'une case dangereuse, mais cette restriction est trop forte : il existe alors des situations bloquées, la figure $4$ en donne un exemple. Il est donc nécessaire d'autoriser au moins certains mouvements qui ne sont pas directement utiles en ce sens, pour permettre d'autres mouvements par la suite. De même, on pourrait vouloir restreindre les mouvements des zéros vers des cases dangereuses, de la même façon que pour le problème des $n$ reines. Cependant, il se forme alors des blocs stables de $1$ : les zéros qui viennent remplacer un $1$ du bord du bloc en sont rapidement éjectés (les seules cases sûres proches sont à l'extérieur du bloc). 
+
+On prend donc le parti de ne pas restreindre les mouvements des zéros vers des cases dangereuses, et on se donne une probabilité d'agitation $p$ : un mouvement valide mais qui ne sort pas un zéro d'une case dangereuse est effectué avec une probabilité $p$, alors qu'un mouvement valide qui sort un zéro d'une case dangereuse est toujours effectué. 
+
+
 
 \begin{figure}
 \centering
 \begin{tabular}{cccccccc}
-0&1&0&0&1&1&0&\textbf 0\\
-0&\textbf 0&0&0&1&1&0&1\\
-0&\textbf 0&0&0&1&1&0&1\\
+0&1&0&0&1&1&0&\fbox 0\\ 
+0&\fbox 0&0&0&1&1&0&1\\
+0&\fbox 0&0&0&1&1&0&1\\
 0&0&0&0&0&0&0&0\\
-0&\textbf 0&0&0&1&1&0&1\\
+0&\fbox 0&0&0&1&1&0&1\\
 \end{tabular}
 
 
-\caption{Exemple de situation bloquée si on interdit les mouvements ne déplaçant pas les zéros menacés (indiqués en gras) : aucune des règles de la Figure $3$ ne s'applique à eux.}
+\caption{Exemple de situation bloquée si on interdit les mouvements ne déplaçant pas les zéros menacés (encadrés) : aucune des règles de la Figure $3$ ne s'applique à eux.}
 
 \end{figure}
+
+
 
 
 \end{document}
