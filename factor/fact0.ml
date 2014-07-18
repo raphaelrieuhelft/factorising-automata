@@ -21,6 +21,13 @@ exception Conflict
   colonne (diagonale si on tient compte des retenues) *)
 
 
+let shd = ref 0
+let shu = ref 0
+let spd = ref 0
+let spu = ref 0
+let sumd = ref 0
+let sumu = ref 0
+
 
 let try_cheat () = Random.float 1. < !p_cheat
 let try_ag () = Random.float 1. < !p_ag
@@ -53,14 +60,14 @@ let shift_down i j ((t, rows, cols) as b) =
     &&((not (safestay i j b)) || try_ag ())
     &&((safego (i+1) (j+1) b (0,0))||try_cheat())
    
-  then (rm i j b; add (i+1) (j+1) b; incr moves; true)
+  then (rm i j b; add (i+1) (j+1) b; incr moves; incr shd; true)
   else false
 
 let shift_up i j ((t, rows, cols) as b) =  
   if (i>0)&&(j>0)&&(t.(i).(j)=0)&&(t.(i-1).(j-1)=1) &&((not (safestay i j b)) || try_ag ())
   &&((safego (i-1) (j-1) b (0,0)|| try_cheat ()))
    
-  then (rm i j b; add (i-1) (j-1) b; incr moves; true)
+  then (rm i j b; add (i-1) (j-1) b; incr moves; incr shu;  true)
   else false
 
 let sum_down i j ((t, rows, cols) as b)= 
@@ -68,7 +75,8 @@ let sum_down i j ((t, rows, cols) as b)=
     (safego (i-1) (j) b (0,1) ||try_cheat ())&& ((not (safestay i j b)) || try_ag ())&& 
     (safego i (j+1) b (1,0) || try_cheat ())
    
-  then (rm i j b; add i (j+1) b; add (i-1) j b; incr moves; true)
+  then (rm i j b; add i (j+1) b; add (i-1) j b; incr moves; incr sumd;
+  true)
   else false
   
 let split_up i j ((t, rows, cols) as b)=
@@ -77,7 +85,7 @@ let split_up i j ((t, rows, cols) as b)=
   (safestay i (j+1) b && safestay (i-1) j b)) || try_ag ())
     &&(safego i j b (1,1) (*false*)|| try_cheat ())
     
-  then (add i j b; rm i (j+1) b; rm (i-1) j b; incr moves; true)
+  then (add i j b; rm i (j+1) b; rm (i-1) j b; incr moves; incr spu; true)
   else false
 
 let split_down i j ((t,rows,cols) as b) = 
@@ -85,7 +93,8 @@ let split_down i j ((t,rows,cols) as b) =
     (i<(!nrows-1))&&(j<(!ncols-2))&&(t.(i).(j)=1)&&(t.(i).(j+1)=0)&&(t.(i+1).(j+2)=0)&&
       ((not ((safestay i (j+1) b)&&(safestay (i+1) (j+2) b)))|| try_ag ()) &&
       (safego i j b (1,0)|| try_cheat ())
-  then (add i j b; rm i (j+1) b; rm (i+1) (j+2) b; incr moves; true)
+  then (add i j b; rm i (j+1) b; rm (i+1) (j+2) b; incr moves; incr
+  spd; true)
   else false
 
 let sum_up i j ((t, rows, cols) as b) =
@@ -93,7 +102,8 @@ let sum_up i j ((t, rows, cols) as b) =
     (i<(!nrows-1))&&(j<(!ncols-2))&&(t.(i).(j)=0)&&(t.(i).(j+1)=1)&&(t.(i+1).(j+2)=1)&&
       (safego i (j+1) b (1,0) || try_cheat ())&& (safego (i+1) (j+2) b (0,0) || try_cheat ()) && 
       ((not (safestay i j b)) || try_ag ())
-  then (rm i j b; add i (j+1) b; add (i+1) (j+2) b; incr moves; true)
+  then (rm i j b; add i (j+1) b; add (i+1) (j+2) b; incr moves; incr
+  sumu;  true)
   else false
 
 let update ((t, rows, cols) as b)  =
@@ -184,17 +194,17 @@ let read_result (t, rows, cols) =
   (int_of_list (List.map f  (Array.to_list rows)))
 
 let find_factors target = 
-  Format.printf "Looking for factors of %d with p_ag = %f, p_cheat = %f@." target !p_ag !p_cheat;
+  (*Format.printf "Looking for factors of %d with p_ag = %f, p_cheat = %f@." target !p_ag !p_cheat;*)
   let (t, rows, cols) = init target in
   let fini = ref false in
   while (not !fini) do
-    if (!time mod 1000000 = 0) then (Unix.sleep 1; print_board t);
+    (*if (!time mod 1000000 = 0) then (Unix.sleep 1; print_board t);*)
     (*if !time > !timeout then fini := true;*)
     incr time;
     if (update (t, rows, cols))
 	then ((*print_board t; Unix.sleep 3;*)
 	  if (check_fini (t, rows, cols))
-	  then (fini := true;  print_board t)
+	  then (fini := true; (* print_board t*))
 	)
   done;
   read_result (t,rows, cols)
@@ -232,8 +242,27 @@ let iter nmin nmax =
     stats i
   done
 
-
+let avg n = 
+  let tot = ref 0 in
+  for i = 1 to !samplesize do 
+    let _ = find_factors n in
+    tot := !tot + !time
+  done;
+  Format.printf "Temps moyen = %d pour n = %d, p_ag = %f@." (!tot /
+  !samplesize) n !p_ag;
+  let rtot = !shu + !shd + !spu + !spd + !sumu + !sumd in
+  Format.printf "Utilisation des règles : 
+shift_up = %d%%,
+shift_down = %d%%,
+split_up = %d%%,
+sum_down = %d%%,
+split_down = %d%%,
+sum_up = %d%%@." (!shu*100/rtot) (!shd*100/rtot) (!spu*100/rtot) (!sumd*100/rtot) (!spd*100/rtot) (!sumu*100/rtot)
+(*
 let _ = Arg.parse options (fun s -> let n = (int_of_string s) in
 				   print_facts n  (find_factors n)
 )
  ""
+*)
+
+let _ = Arg.parse options (fun s -> avg (int_of_string s)) ""
