@@ -104,7 +104,7 @@ On cherche un système dynamique discret qui, étant donné un entier non-premie
 \caption{La matrice de gauche s'interprète comme la multiplication de $11$ ($1011$ horizontalement) par $13$ ($1101$ verticalement, de haut en bas).}
 \end{figure}
 
-Par ailleurs, étant donné une matrice $M$ à coefficients dans $\{0,1\}$, on pose $\sigma(M)$ l'entier obtenu en sommant ses lignes décalées (cf. Figure 2). Si $M$ représente une multiplication, $\sigma$ est par construction le produit. 
+Par ailleurs, étant donné une matrice $M$ à coefficients dans $\{0,1\}$, on pose $\sigma$ l'entier obtenu en sommant ses lignes décalées (cf. Figure 2). Si $M$ représente une multiplication, $\sigma$ est par construction le produit. 
 
 \begin{figure}[]
 \centering
@@ -118,7 +118,7 @@ $M=$
 \end{minipage}
 \quad
 \begin{minipage}[]{0.6\linewidth}
-$\sigma(M)=$
+$\sigma=$
 \begin{tabular}{llllllll}
 &&&&1&1&0&1\\
 +&&&0&0&1&1&.\\
@@ -132,11 +132,34 @@ $=55$
 
 \end{figure}
 
-L'idée est donc de partir d'une matrice à coefficients dans $\{0,1\}$ pour laquelle $\sigma$ vaut le nombre qu'on cherche à factoriser, et de lui appliquer des transformations qui conservent $\sigma$ jusqu'à atteindre une matrice qui représente une multiplication.
+L'idée est donc de partir d'une matrice $M$ à coefficients dans $\{0,1\}$ telle que $\sigma$ vaut le nombre qu'on cherche à factoriser, et de lui appliquer des transformations qui préservent $\sigma$ comme invariant jusqu'à atteindre une matrice qui représente une multiplication. Ainsi, notre système n'a pas à vérifier que le produit de cette multiplication est l'entier à factoriser, ce qui simplifie considérablement sa conception.
 
 \section*{Un algorithme}
 
-Soit $n$ le nombre de chiffres en base $2$ du nombre composé $N$ dont on cherche un diviseur non-trivial. On se donne une matrice $M$ de taille $ n-1 \times \lceil \frac{n}{2}\rceil$ telle que $\sigma(M)=N$. Pour tous $a$ et $b$ différents de $1$ et $N$, et tels que $N = ab$, $a$ ou $b$ est de taille inférieure à $\lceil\frac{n}{2}\rceil$ et l'autre est de taille inférieure à $n-1$, on peut donc représenter leur multiplication sur une matrice de la taille de $M$. On l'initialise en recopiant les $n-1$ bits de poids faible de $N$ sur la première ligne, et avec un $1$ en position $(2,1)$ et des zéros partout ailleurs. On vérifie aisément que $\sigma(M)=N$. 
+Soit $n$ le nombre de chiffres en base $2$ du nombre composé $N$ dont on cherche un diviseur non-trivial. On se donne une matrice $M$ de taille $ n-1 \times \lceil \frac{n}{2}\rceil$ telle que $\sigma=N$. Pour tous $a$ et $b$ différents de $1$ et $N$, et tels que $N = ab$, $a$ ou $b$ est de taille inférieure à $\lceil\frac{n}{2}\rceil$ et l'autre est de taille inférieure à $n-1$, on peut donc représenter leur multiplication à l'aide d'une matrice de la taille de $M$. On l'initialise en recopiant les $n-1$ bits de poids faible de $N$ sur la première ligne, et avec un $1$ en position $(2,1)$ et des zéros partout ailleurs (cf. Figure \ref{fig:init}). On vérifie aisément que $\sigma=N$. 
+
+
+\begin{figure}[h]
+\centering
+
+$21 \Rightarrow \overline{10101}^{\small{2}} \Rightarrow$
+\begin{tabular}{cccc}
+0&1&0&1\\
+1&0&0&0\\
+0&0&0&0\\
+\end{tabular}
+$\Rightarrow$
+\begin{tabular}{ccccccc}
+&&&0&1&0&1\\
++&&1&0&0&0&.\\
++&0&0&0&0&.&.\\
+\hline
+&0&1&0&1&0&1\\
+\end{tabular}
+
+\caption{Exemple de construction de la matrice $M$ de départ pour factoriser $N=21$.}
+\label{fig:init}
+\end{figure}
 
 Formellement, on pose $\La=\cg 1, n-1 \cd \times \cg 1, \lceil\frac{n}{2}\rceil\cd$ l'ensemble des cases de la matrice, et $\E=\{0,1\}^\La$ l'ensemble des configurations. Pour tout $x \in \E$, $(i,j)\in\La$, on note $x_{i,j}$ le coefficient $(i,j)$ de la matrice $x$. 
 
@@ -218,10 +241,12 @@ On prend donc le parti de ne pas restreindre les mouvements des zéros vers des 
 \textbf{R1}(x,(i,j))=
 \begin{cases}
   \hfill x' \hfill & \text{ si}  \begin{cases}\text{ $x_{i,j}=1$ et $x_{i+1,j+1}=0$ }\\
-    \text{ et} \begin{cases}
-      \text {soit $(i+1,j+1)$ est une case dangereuse} \\
-      \text {soit $\mathcal{B}(p) = 1$}
-    \end{cases}
+    \text{ et}  \left\{
+        \begin{tabular}{@{}c@{}l}
+          &\text{ $(i+1,j+1)$ est une case dangereuse}\\
+          \text {ou}& \text{ $\mathcal{B}(p)=1$}\\
+        \end{tabular}
+      \right.
   \end{cases}
   \\
   \hfill x \hfill & \text{ sinon}
@@ -234,11 +259,13 @@ On applique une règle si au moins un des zéros concernés est sur une case dan
 \textbf{R3}(x,(i,j))=
 \begin{cases}
   \hfill x'' \hfill & \text {si} \begin{cases}\text{ $x_{i,j}=1$ et $x_{i-1,j}=x_{i,j+1}=0$} \\
-    \text{ et} \begin{cases}
-      \text {soit $(i-1,j)$ est une case dangereuse}\\
-      \text {soit $(i,j+1)$ l'est}\\
-      \text {soit $\mathcal{B}(p)=1$}
-      \end{cases}
+    \text{ et} \left\{
+        \begin{tabular}{@{}c@{}l}
+          &\text{ $(i-1,j)$ est une case dangereuse}\\
+          \text {ou}& \text{ $(i,j+1)$ l'est}\\
+          \text {ou}& \text{ $\mathcal{B}(p)=1$}\\
+        \end{tabular}
+      \right.
     \end{cases}
   \\
   \hfill x \hfill & \text {sinon}
@@ -253,7 +280,7 @@ Du fait de l'existence de mouvements spontanés, il n'y a pas de point fixe à p
 
 \subsection*{Performances et observations}
 
-Les performances varient grandement selon la décomposition en facteurs premiers du nombre à factoriser. Ainsi, les nombres pour lesquelles les matrices solutions du problème comportent peu de $1$ semblent bien plus difficiles : alors que l'algorithme trouve un diviseur de $493$ ($17\times 29$) en $9\times 10^5$ pas de temps en moyenne, il lui faut $10^9$ étapes pour factoriser $362$ ($2\times 181$) ! Ceci est dû au fait que la densité de $1$ varie très peu au cours du temps (elle oscille autour d'une densité moyenne, et les solutions pour lesquelles la densité finale en est éloignée sont difficiles à trouver). 
+Les performances varient grandement selon la décomposition en facteurs premiers du nombre à factoriser. Ainsi, les nombres pour lesquelles les matrices solutions du problème comportent peu de $1$ semblent bien plus difficiles : l'algorithme trouve en $10^6$ pas de temps en moyenne un diviseur de $493$ ($ = 17\times 29$), mais pour factoriser $362$ ($ = 2\times 181$), il lui faut $10^9$ étapes ! Ceci est dû au fait que la densité de $1$ varie très peu au cours du temps (elle oscille autour d'une densité moyenne, et les solutions pour lesquelles la densité finale en est éloignée sont difficiles à trouver). 
 
 \medskip
 
@@ -268,6 +295,6 @@ Le fait que les $1$ isolés ne soient pas encouragés à se déplacer est d'auta
 On peut donc envisager l'amélioration suivante : plutôt que d'utiliser une grande matrice, on suppose connue la taille des diviseurs. Si $n$ est la taille du nombre à factoriser, il y a au plus $2n-1$ tailles de matrices possibles à essayer car la somme des tailles des diviseurs vaut nécessairement $n$ ou $n+1$ et on ignore les matrices dont une dimension vaut $1$ car on cherche des diviseurs non-triviaux. On lance donc en parallèle l'algorithme sur les $2n-1$ matrices différentes, et on arrête l'exécution dès qu'une solution est trouvée pour l'une des tailles. Quitte à supposer impair le nombre à factoriser, on impose de plus qu'il y ait un $1$ à chacun des quatre coins (c'est une condition nécessaire pour qu'une matrice dont les dimensions sont exactement les tailles de deux facteurs soit solution : chaque facteur commence par un $1$ car les zéros à gauche ne sont pas significatifs, et finissent par un $1$ car les diviseurs d'un nombre impair sont impairs). 
 
 \medskip
-Il apparaît que l'exécution de l'algorithme est significativement plus rapide qu'avec la grande matrice. Les nombres dont l'un des facteurs est très petit deviennent très faciles à traiter, car la matrice de la bonne taille est très petite, et le calcul y aboutit donc rapidement. Les nombres les plus difficiles à traiter deviennent, comme pour les algorithmes classiques de factorisation, les produits de deux nombres premiers de même taille : en effet, la seule matrice pour laquelle l'algorithme peut aboutir est alors de taille maximale. Même dans ce cas, l'exécution est significativement plus rapide car on ne perd plus de temps à cause des $1$ situés dans une zone inutile de la matrice. On gagne ainsi un facteur $100$ sur la factorisation de $329$ ($7\times 47$), largement de quoi justifier de lancer simultanément une quinzaine d'exécutions. 
+Il apparaît que l'exécution de l'algorithme est significativement plus rapide qu'avec la grande matrice. Les nombres dont l'un des facteurs est très petit deviennent très faciles à traiter, car la matrice de la bonne taille est très petite, et le calcul y aboutit donc rapidement. Les nombres les plus difficiles à traiter deviennent, comme pour les algorithmes classiques de factorisation, les produits de deux nombres premiers de même taille : en effet, la seule matrice pour laquelle l'algorithme peut aboutir est alors de taille maximale. Même dans ce cas, l'exécution est plus rapide car on ne perd plus de temps à cause des $1$ situés dans une zone inutile de la matrice. On gagne ainsi un facteur $100$ sur le temps de factorisation de $329$ ($7\times 47$), largement de quoi justifier de lancer simultanément une quinzaine d'exécutions. % TODO : stats plus détaillées ici ?
 
 \end{document}
