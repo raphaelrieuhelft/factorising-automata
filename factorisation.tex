@@ -57,6 +57,19 @@
 \newcommand{\myrightleftarrows}[1]{\mathrel{\substack{\xrightarrow{#1} \\[-.6ex] \xleftarrow{#1}}}}
 \newcommand{\longrightleftarrows}{\myrightleftarrows{\rule{1cm}{0cm}}}
 
+\newcommand\tikzmark[1]{%
+  \tikz[overlay,remember picture,baseline] 
+  \node[anchor=base](#1){};}
+
+\newcommand\MyLine[3][]{%
+  \begin{tikzpicture}[overlay,remember picture]
+    \draw[#1] (#2.north west) -- (#3.south east);
+  \end{tikzpicture}}
+
+
+
+
+
 \begin{document}
 \floatpagestyle{plain}
 \renewcommand{\labelitemi}{$\bullet$}
@@ -286,14 +299,31 @@ Du fait de l'existence de mouvements spontanés, il n'y a pas de point fixe à p
 On cherche ici à montrer que la solution est accessible à partir de la solution de départ en appliquant uniquement les règles de $\Gamma$. On va en fait montrer un résultat un peu plus général : en appliquant les règles de $\Gamma$, il est possible de passer d'une matrice quelconque à n'importe quelle autre matrice pour laquelle $\sigma$ a la même valeur. 
 
 \begin{df*}
-Pour toutes matrices $M$ et $N$, on a $M\sim N$ si et seulement si on peut passer de $M$ à $N$ en appliquant des transformations de $\Gamma$.
+Pour toutes matrices $A$ et $B$, on a $A\sim B$ si et seulement si on peut passer de $M$ à $N$ en appliquant des transformations de $\Gamma$.
 \end{df*}
 
 Remarquons que $\sim$ est une relation d'équivalence (la symétrie vient du fait que toutes les règles de $\Gamma$ ont un inverse, donc tous les mouvements sont réversibles).
 
+Pour toute matrice $M$, on numérote ses diagonales descendantes en commençant à $0$ par celle réduite au coin supérieur droit (cf Fig. \ref{fig:diags}), et on note $b_i$ le nombre de coefficients égaux à $1$ sur la diagonale $i$, de sorte que $\sigma = \sum\limits_ib_i2^i$. On constate que deux matrices ayant les mêmes coefficients $b_i$ pour tout $i$ sont équivalentes pour $\sim$ (en fait, on peut passer de l'une à l'autre en utilisant uniquement les règles \textbf{R1} et \textbf{R2}).
 
 
-On va montrer que pour tout $N$, il existe une unique matrice de la taille choisie dans l'algorithme telle que $\sigma = N$ et dont le nombre de coefficients égaux à $1$ est minimal. 
+\begin{figure}
+\begin{tikzpicture}
+\[
+\begin{matrix}
+\tikzmark{a} & \tikzmark{b} & \tikzmark{c} & \\
+\phantom{0}\tikzmark{a21}& & \phantom{0}\tikzmark{a23}& b_0 \\
+\phantom{0}\tikzmark{a31}& \phantom{0}\tikzmark{a32} &  \phantom{0}\tikzmark{a33} & b_1 \\
+&b_4&b_3&b_2\\
+\end{matrix}
+\]
+\end{tikzpicture}
+\caption{Signification des coefficients $b_i$.}
+\label{fig:diags}
+\end{figure}
+
+On va montrer que pour tout $N$, toutes les matrices de même taille telles que $\sigma = N$ et dont le nombre de coefficients égaux à $1$ est minimal ont les mêmes coefficients $b_i$, puis que toute matrice telle que $\sigma=N$ leur est équivalente pour $\sim$.  
+
 
 
 \subsection*{Performances et observations}
