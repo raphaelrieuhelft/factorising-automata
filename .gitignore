@@ -16,3 +16,4 @@ _build/
 #*
 *.log
 *.aux
+*.synctex.gz
