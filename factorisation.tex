@@ -3,7 +3,7 @@
 \usepackage[frenchb]{babel}
 %\usepackage{slashbox}
 \usepackage{graphicx}
-\usepackage{amsmath,amssymb,amstext}
+\usepackage{amsmath,amssymb,amstext,amsthm}
 %\usepackage{comment}
 \usepackage[utf8]{inputenc}
 \usepackage[OT1]{fontenc}
@@ -18,6 +18,7 @@
 \newtheorem{q}[moncompteur]{ \textbf{Question}}{}
 \newtheorem{prop}[moncompteur]{ \textbf{Proposition}}{}
 \newtheorem{df}[moncompteur]{ \textbf{Définition}}{}
+\newtheorem*{df*}{ \textbf{Définition}}{}
 \newtheorem{rem}[moncompteur]{ \textbf{Remarque}}{}
 \newtheorem{theo}[moncompteur]{ \textbf{Théorème}}{}
 \newtheorem{conj}[moncompteur]{ \textbf{Conjecture}}{}
@@ -71,6 +72,7 @@
 
 
 On cherche un système dynamique discret qui, étant donné un entier non-premier, trouve un de ses diviseurs non-triviaux. On se base sur la multiplication binaire. En effet, on observe qu'une matrice à coefficients dans $\{0,1\}$ peut s'interpréter comme une multiplication binaire si ses lignes non-nulles sont égales entre elles, comme illustré dans la figure $1$. Les colonnes non-nulles sont alors aussi égales entre elles, et les deux facteurs de la multiplication sont alors lisibles, en base $2$, sur les lignes non-nulles pour l'un, et de bas en haut sur les colonnes non-nulles pour l'autre. Si on pose leur multiplication, toujours en base $2$, on retrouve en effet la matrice de départ décalée d'un cran par ligne vers la gauche (cf. Figure $1$).
+
 
 
 
@@ -142,7 +144,7 @@ Soit $n$ le nombre de chiffres en base $2$ du nombre composé $N$ dont on cherch
 \begin{figure}[h]
 \centering
 
-$21 \Rightarrow \overline{10101}^{\small{2}} \Rightarrow$
+$21 \Rightarrow \overline{10101}^2 \Rightarrow$
 \begin{tabular}{cccc}
 0&1&0&1\\
 1&0&0&0\\
@@ -216,7 +218,7 @@ On se donne également un ensemble $\Gamma \subset \E^{\E\times\La}$ de transfor
 
 Une formulation équivalente de l'égalité des lignes non-nulles est qu'un coefficient situé sur la même ligne qu'un 1 et sur la même colonne qu'un 1 vaut nécessairement 1 dans une matrice qui représente une multiplication. On va donc appliquer aléatoirement des règles conservant $\sigma$, en privilégiant les mouvements qui retirent les zéros de telles cases. Dans la suite, on dira qu'une case est \emph{sûre} s'il n'y a pas de $1$ sur la même ligne ou s'il n'y en a pas sur la même colonne, et \emph{dangereuse} s'il y a à la fois un $1$ sur la même ligne et un sur la même colonne.
 
-Pour diriger les zéros vers les cases sûres, on voudrait n'effectuer que des mouvements qui sortent un zéro d'une case dangereuse, mais cette restriction est trop forte : il existe alors des situations bloquées, la figure $4$ en donne un exemple. Il est donc nécessaire d'autoriser au moins certains mouvements qui ne sont pas directement utiles en ce sens, pour permettre d'autres mouvements par la suite. De même, on pourrait vouloir restreindre les mouvements des zéros vers des cases dangereuses, de la même façon que pour le problème des $n$ reines. Cependant, il se forme alors des blocs stables de $1$ : les zéros qui viennent remplacer un $1$ du bord du bloc en sont rapidement éjectés (les seules cases sûres proches sont à l'extérieur du bloc). 
+Pour diriger les zéros vers les cases sûres, on voudrait n'effectuer que des mouvements qui sortent un zéro d'une case dangereuse, mais cette restriction est trop forte : il existe alors des situations bloquées, la figure $4$ en donne un exemple. Il est donc nécessaire d'autoriser au moins certains mouvements qui ne sont pas directement utiles en ce sens. Par ailleurs, on pourrait vouloir restreindre les mouvements des zéros vers des cases dangereuses, de la même façon que pour le problème des $n$ reines. Cependant, il se forme alors des blocs stables de $1$ : les zéros qui viennent remplacer un $1$ du bord du bloc en sont rapidement éjectés (les seules cases sûres proches sont à l'extérieur du bloc). 
 
 On prend donc le parti de ne pas restreindre les mouvements des zéros vers des cases dangereuses, et on se donne une probabilité d'agitation $p$ : un mouvement valide mais qui ne sort pas un zéro d'une case dangereuse est effectué avec une probabilité $p$, alors qu'un mouvement valide qui sort un zéro d'une case dangereuse est toujours effectué. 
 
@@ -244,7 +246,8 @@ On prend donc le parti de ne pas restreindre les mouvements des zéros vers des 
     \text{ et}  \left\{
         \begin{tabular}{@{}c@{}l}
           &\text{ $(i+1,j+1)$ est une case dangereuse}\\
-          \text {ou}& \text{ $\mathcal{B}(p)=1$}\\
+          \text {ou}&\\
+          &\text{ $\mathcal{B}(p)=1$}\\
         \end{tabular}
       \right.
   \end{cases}
@@ -278,9 +281,24 @@ avec $x''$ la configuration obtenue à partir de $x$ en changeant les valeurs de
 
 Du fait de l'existence de mouvements spontanés, il n'y a pas de point fixe à proprement parler : on est contraint de vérifier après chaque mouvement si la matrice représente une multiplication valide, et d'arrêter les mises à jour le cas échéant. 
 
+\subsection*{Atteignabilité de la solution}
+
+On cherche ici à montrer que la solution est accessible à partir de la solution de départ en appliquant uniquement les règles de $\Gamma$. On va en fait montrer un résultat un peu plus général : en appliquant les règles de $\Gamma$, il est possible de passer d'une matrice quelconque à n'importe quelle autre matrice pour laquelle $\sigma$ a la même valeur. 
+
+\begin{df*}
+Pour toutes matrices $M$ et $N$, on a $M\sim N$ si et seulement si on peut passer de $M$ à $N$ en appliquant des transformations de $\Gamma$.
+\end{df*}
+
+Remarquons que $\sim$ est une relation d'équivalence (la symétrie vient du fait que toutes les règles de $\Gamma$ ont un inverse, donc tous les mouvements sont réversibles).
+
+
+
+On va montrer que pour tout $N$, il existe une unique matrice de la taille choisie dans l'algorithme telle que $\sigma = N$ et dont le nombre de coefficients égaux à $1$ est minimal. 
+
+
 \subsection*{Performances et observations}
 
-Les performances varient grandement selon la décomposition en facteurs premiers du nombre à factoriser. Ainsi, les nombres pour lesquelles les matrices solutions du problème comportent peu de $1$ semblent bien plus difficiles : l'algorithme trouve en $10^6$ pas de temps en moyenne un diviseur de $493$ ($ = 17\times 29$), mais pour factoriser $362$ ($ = 2\times 181$), il lui faut $10^9$ étapes ! Ceci est dû au fait que la densité de $1$ varie très peu au cours du temps (elle oscille autour d'une densité moyenne, et les solutions pour lesquelles la densité finale en est éloignée sont difficiles à trouver). 
+Les performances varient grandement selon l'entier à factoriser : sa dé\-composition en facteurs premiers, et plus généralement la distribution de $1$ dans la matrice solution semblent être des facteurs déterminants. Ainsi, les nombres les plus faciles semblent être ceux qui ont le plus de diviseurs, ce qui s'explique par le fait que plus de solutions existent pour de tels nombres. Si on ne s'intéresse qu'aux nombres qui sont le produit de deux nombres premiers, les nombres pour lesquelles les matrices solutions du problème comportent peu de $1$ semblent les plus difficiles : l'algorithme trouve en $10^6$ pas de temps en moyenne un diviseur de $493$ ($ = 17\times 29$), mais pour factoriser $362$ ($ = 2\times 181$), il lui faut $10^9$ étapes ! Ceci est dû au fait que la densité de $1$ varie très peu au cours du temps (elle oscille autour d'une densité moyenne, et les solutions pour lesquelles la densité finale en est éloignée sont difficiles à trouver). 
 
 \medskip
 
