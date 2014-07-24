@@ -359,11 +359,54 @@ Les performances varient grandement selon l'entier à factoriser : sa dé\-compo
 
 \medskip
 
-De plus, les conditions que l'on s'est donné pour appliquer les règles tendent à chasser les zéros menacés, mais rien ne pousse particulièrement les $1$ isolés à se déplacer. Il est donc relativement difficile de trouver les positions pour lesquelles les $1$ sont tous à un endroit précis de la matrice : ainsi, pour les nombres de la forme $2^kp$ avec $p$ premier, la matrice aura tous ses $1$ sur la même ligne (la $k$-ième) ou bien sur la même diagonale. Ainsi, dans les cas ``faciles'' tels que $493$, une solution est atteinte environ $40$ fois plus vite avec $p=0.05$ qu'avec $p=1$ (cas où le système applique des règles valides sans tenir compte du caractère dangereux ou sûr des cases), mais dans les cas difficiles tels que $362$, les performances sont plutôt meilleures avec la marche aléatoire $p=1$. Plus généralement, l'évolution du système n'est dirigée que faiblement, notamment parce qu'on a décidé de ne pas restreindre les déplacements de zéros vers des cases dangereuses et parce que le système n'a pas de mémoire. 
+De plus, les conditions que l'on s'est donné pour appliquer les règles tendent à chasser les zéros menacés, mais rien ne pousse particulièrement les $1$ isolés à se déplacer. Il est donc relativement difficile de trouver les positions pour lesquelles les $1$ sont tous à un endroit précis de la matrice : ainsi, pour les nombres de la forme $2^kp$ avec $p$ premier, la matrice aura tous ses $1$ sur la même ligne (la $k$-ième) ou bien sur la même diagonale. Ainsi, dans les cas ``faciles'' tels que $493$, une solution est atteinte environ $40$ fois plus vite avec $p=0.05$ qu'avec $p=1$ (cas où le système applique des règles valides sans tenir compte du caractère dangereux ou sûr des cases), mais dans les cas difficiles tels que $362$, les performances sont plutôt meilleures avec la marche aléatoire $p=1$. Plus généralement, l'évolution du système n'est dirigée que faiblement, notamment parce qu'on a décidé de ne pas restreindre les déplacements de zéros vers des cases dangereuses et parce que le système n'a pas de mémoire.
 
 \medskip
  
 Le fait que les $1$ isolés ne soient pas encouragés à se déplacer est d'autant plus gênant qu'on a choisi une taille de matrice nécessairement trop grande pour les facteurs que l'on va trouver. En effet, on a pris une matrice de taille $n-1 \times \lceil \frac{n}{2} \rceil$ pour un nombre de taille $n$ afin d'assurer de pouvoir trouver n'importe quel diviseur non trivial, mais la somme des longueurs des deux facteurs que l'on va trouver est au plus $n+1$. Par conséquent, tous les $1$ d'une matrice solution sont contenus dans un rectangle dont l'un des sommets est le coin supérieur droit et dont le périmètre est limité : s'il y a un $1$ dans le coin inférieur droit, il ne peut y en avoir aucun dans toute la moitié gauche de la matrice ! Si, dans une exécution de l'algorithme, aucun $1$ n'apparaît typiquement dans le quart inférieur gauche pour $p$ assez petit, il y en a fréquemment à la fois dans le coin supérieur gauche et inférieur droit, ce qui fait perdre beaucoup de temps. 
+
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+  \begin{axis}[%
+      width=\textwidth,
+      ymode=log,
+      scaled y ticks=false,
+      %scaled x ticks=false,
+      xlabel={$p$},
+      ylabel={Temps de convergence},
+      xtick = {0.001, 0.01, 0.05, 0.1%, 0.2
+      },
+      legend entries = {221, 247, 319, 377, 403, 493},
+      legend style = {legend pos=north west}]
+      \addplot coordinates {
+        (0.001, 4.3e5) (0.01, 1.6e5) (0.05, 2.4e5) (0.1, 2.4e5) %(0.2, 4.6e5)
+      }; 
+      \addplot coordinates {
+        (0.001, 9.6e4) (0.01, 5.4e4) (0.05, 7.1e4) (0.1, 1.3e5) %(0.2, 1.9e5)
+      }; 
+      \addplot coordinates {
+        (0.001, 9.4e4) (0.01, 5.2e4) (0.05, 8.3e4) (0.1, 1.5e5) %(0.2, 3.0e5)
+      }; 
+      \addplot coordinates {
+        (0.001, 5.7e4) (0.01, 3.9e4) (0.05, 7.7e4) (0.1, 1.6e5) %(0.2, 3.4e5)
+      }; 
+      \addplot coordinates {
+        (0.001, 1.8e5) (0.01, 8.1e4) (0.05, 1.7e5) (0.1, 3.0e5) %(0.2, 8.0e5)
+      }; 
+      \addplot coordinates {
+        (0.001, 5.5e5) (0.01, 5.1e5) (0.05, 8.6e5) (0.1, 1.7e6) %(0.2, 3.6e6)
+      }; 
+
+    %\addlegendentry{Temps de convergence}
+        
+  \end{axis}
+  \end{tikzpicture}
+  \caption{Temps de convergence moyen en fonction de $N$ et $p$ (échelle logarithmique).}
+\end{figure}  
+
+
 
 %TODO : comparatif entre différents entiers
 

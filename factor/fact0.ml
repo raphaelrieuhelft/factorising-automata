@@ -249,15 +249,18 @@ let avg n =
     tot := !tot + !time
   done;
   Format.printf "Temps moyen = %d pour n = %d, p_ag = %f@." (!tot /
-  !samplesize) n !p_ag;
-  let rtot = !shu + !shd + !spu + !spd + !sumu + !sumd in
+  !samplesize) n !p_ag
+ (* let rtot = !shu + !shd + !spu + !spd + !sumu + !sumd in
   Format.printf "Utilisation des règles : 
 shift_up = %d%%,
 shift_down = %d%%,
 split_up = %d%%,
 sum_down = %d%%,
 split_down = %d%%,
-sum_up = %d%%@." (!shu*100/rtot) (!shd*100/rtot) (!spu*100/rtot) (!sumd*100/rtot) (!spd*100/rtot) (!sumu*100/rtot)
+sum_up = %d%%@." (!shu*100/rtot) (!shd*100/rtot) (!spu*100/rtot)
+  (!sumd*100/rtot) (!spd*100/rtot) (!sumu*100/rtot)*)
+
+
 (*
 let _ = Arg.parse options (fun s -> let n = (int_of_string s) in
 				   print_facts n  (find_factors n)
@@ -265,4 +268,9 @@ let _ = Arg.parse options (fun s -> let n = (int_of_string s) in
  ""
 *)
 
-let _ = Arg.parse options (fun s -> avg (int_of_string s)) ""
+let _ = Arg.parse options (fun s -> 
+  List.iter (fun p-> 
+    p_ag:=p;
+    avg (int_of_string s))
+    [0.001; 0.01; 0.05; 0.1; 0.2]
+) ""
