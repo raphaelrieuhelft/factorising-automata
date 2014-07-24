@@ -120,7 +120,7 @@ On cherche un système dynamique discret qui, étant donné un entier non-premie
 \caption{La matrice de gauche s'interprète comme la multiplication de $11$ ($1011$ horizontalement) par $13$ ($1101$ verticalement, de haut en bas).}
 \end{figure}
 
-Par ailleurs, étant donné une matrice $M$ à coefficients dans $\{0,1\}$, on pose $\sigma$ l'entier obtenu en sommant ses lignes décalées (cf. Figure 2). Si $M$ représente une multiplication, $\sigma$ est par construction le produit. 
+Par ailleurs, étant donné une matrice $M$ à coefficients dans $\{0,1\}$, on pose $\sigma (M)$ l'entier obtenu en sommant ses lignes décalées (cf. Figure 2). Si $M$ représente une multiplication, $\sigma(M)$ est par construction le produit. 
 
 \begin{figure}[]
 \centering
@@ -134,7 +134,7 @@ $M=$
 \end{minipage}
 \quad
 \begin{minipage}[]{0.6\linewidth}
-$\sigma=$
+$\sigma(M)=$
 \begin{tabular}{llllllll}
 &&&&1&1&0&1\\
 +&&&0&0&1&1&.\\
@@ -148,11 +148,11 @@ $=55$
 
 \end{figure}
 
-L'idée est donc de partir d'une matrice $M$ à coefficients dans $\{0,1\}$ telle que $\sigma$ vaut le nombre qu'on cherche à factoriser, et de lui appliquer des transformations qui préservent $\sigma$ comme invariant jusqu'à atteindre une matrice qui représente une multiplication. Ainsi, notre système n'a pas à vérifier que le produit de cette multiplication est l'entier à factoriser, ce qui simplifie considérablement sa conception.
+L'idée est donc de partir d'une matrice $M$ à coefficients dans $\{0,1\}$ telle que $\sigma(M)$ vaut le nombre qu'on cherche à factoriser, et de lui appliquer des transformations qui préservent $\sigma$ comme invariant jusqu'à atteindre une matrice qui représente une multiplication. Ainsi, notre système n'a pas à vérifier que le produit de cette multiplication est l'entier à factoriser, ce qui simplifie considérablement sa conception.
 
 \section*{Un algorithme}
 
-Soit $n$ le nombre de chiffres en base $2$ du nombre composé $N$ dont on cherche un diviseur non-trivial. On se donne une matrice $M$ de taille $ n-1 \times \lceil \frac{n}{2}\rceil$ telle que $\sigma=N$. Pour tous $a$ et $b$ différents de $1$ et $N$, et tels que $N = ab$, $a$ ou $b$ est de taille inférieure à $\lceil\frac{n}{2}\rceil$ et l'autre est de taille inférieure à $n-1$, on peut donc représenter leur multiplication à l'aide d'une matrice de la taille de $M$. On l'initialise en recopiant les $n-1$ bits de poids faible de $N$ sur la première ligne, et avec un $1$ en position $(2,1)$ et des zéros partout ailleurs (cf. Figure \ref{fig:init}). On vérifie aisément que $\sigma=N$. 
+Soit $n$ le nombre de chiffres en base $2$ du nombre composé $N$ dont on cherche un diviseur non-trivial. On se donne une matrice $M$ de taille $ n-1 \times \lceil \frac{n}{2}\rceil$ telle que $\sigma(M)=N$. Pour tous $a$ et $b$ différents de $1$ et $N$, et tels que $N = ab$, $a$ ou $b$ est de taille inférieure à $\lceil\frac{n}{2}\rceil$ et l'autre est de taille inférieure à $n-1$, on peut donc représenter leur multiplication à l'aide d'une matrice de la taille de $M$. On l'initialise en recopiant les $n-1$ bits de poids faible de $N$ sur la première ligne, et avec un $1$ en position $(2,1)$ et des zéros partout ailleurs (cf. Figure \ref{fig:init}). On vérifie aisément que $\sigma(M)=N$. 
 
 
 \begin{figure}[h]
@@ -305,7 +305,7 @@ Pour toutes matrices $A$ et $B$, on a $A\sim B$ si et seulement si on peut passe
 
 Remarquons que $\sim$ est une relation d'équivalence (la symétrie vient du fait que toutes les règles de $\Gamma$ ont un inverse, donc tous les mouvements sont réversibles).
 
-Pour toute matrice $M$, on numérote ses diagonales descendantes en commençant à $0$ par celle réduite au coin supérieur droit (cf Fig. \ref{fig:diags}), et on note $b_i$ le nombre de coefficients égaux à $1$ sur la diagonale $i$, de sorte que $\sigma = \sum\limits_ib_i2^i$. On constate que deux matrices ayant les mêmes coefficients $b_i$ pour tout $i$ sont équivalentes pour $\sim$ (en fait, on peut passer de l'une à l'autre en utilisant uniquement les règles \textbf{R1} et \textbf{R2}). On note de plus $r$ le nombre de diagonales descendantes de la matrice (par exemple, dans le cas d'une matrice $3\times 3$, $r=5$). Enfin, pour tout $0\leq i < r$, on note $t_i$ la taille de la $i$-ème diagonale : on a $0\leq b_i \leq t_i$. 
+Pour toute matrice $M$, on numérote ses diagonales descendantes en commençant à $0$ par celle réduite au coin supérieur droit (cf Fig. \ref{fig:diags}), et on note $b_i$ le nombre de coefficients égaux à $1$ sur la diagonale $i$, de sorte que $\sigma (M) = \sum\limits_ib_i2^i$. On constate que deux matrices ayant les mêmes coefficients $b_i$ pour tout $i$ sont équivalentes pour $\sim$ (en fait, on peut passer de l'une à l'autre en utilisant uniquement les règles \textbf{R1} et \textbf{R2}). On note de plus $r$ le nombre de diagonales descendantes de la matrice (par exemple, dans le cas d'une matrice $3\times 3$, $r=5$). Enfin, pour tout $0\leq i < r$, on note $t_i$ la taille de la $i$-ème diagonale : on a $0\leq b_i \leq t_i$. 
  
 
 
@@ -328,14 +328,14 @@ Pour toute matrice $M$, on numérote ses diagonales descendantes en commençant 
 \label{fig:diags}
 \end{figure}
 
-On va montrer que pour tout $N$, toute matrice telle que $\sigma=N$ est équivalente pour $\sim$ à une certaine matrice dont le nombre de coefficients égaux à $1$ est minimal.  
+On va montrer que pour tout $N$, toute matrice pour laquelle $\sigma=N$ est équivalente pour $\sim$ à une certaine matrice dont le nombre de coefficients égaux à $1$ est minimal.  
 
 Soit donc $N \in \N$, $m$ le nombre minimal de $1$ que doit contenir une matrice de la taille voulue pour laquelle $\sigma=N$. Soit $M$ une telle matrice. Elle vérifie nécessairement, pour tout $i<r-1$, $b_i \leq 1$ ou $b_{i+1}=t_{i+1}$ : sinon, on pourrait appliquer des règles \textbf{R1} et \textbf{R2} dans les diagonales $i$ et $i+1$, puis une fois la règle \textbf{R4} et se ramener à une matrice avec strictement moins de $1$.
 Par conséquent, si $b_i > 1$, on a par récurrence que pour tout $j>i$, $b_j = t_j$.
-On suppose que tous les coefficients de $M$ ne sont pas égaux à $1$ (sinon, $M$ est la seule matrice telle que $\sigma = N$ et on a fini).
+On suppose que tous les coefficients de $M$ ne sont pas égaux à $1$ (sinon, $M$ est la seule matrice pour laquelle $\sigma = N$ et on a fini).
 Il existe alors $k \in \cg 0, r-1 \cd$ tel que $b_k<t_k$, pour tout  $i<k$, $b_i \leq 1$ et pour tout $i>k$, $b_i=t_i$ (c'est le plus grand $i$ tel que $b_i < t_i$).
 
-Soit maintenant $M'$ une autre matrice telle que $\sigma=N$, et minimale pour le nombre de coefficients égaux à $1$ dans sa classe d'équivalence pour $\sim$. Notons, pour tout $i$, $b'_i$ le nombre de coefficients égaux à $1$ sur la $i$-ème diagonale de $M'$. Il existe également $k'$ tel que $b'_{k'} < t_{k'}$, pour tout $i<k'$, $b'_i \leq 1$ et pour tout $i>k'$, $b'_i=t_i$. Si $k'<k$, alors pour tout $i>k$, $b_i= b'_i$ donc : 
+Soit maintenant $M'$ une autre matrice telle que $\sigma (M')=N$, et minimale pour le nombre de coefficients égaux à $1$ dans sa classe d'équivalence pour $\sim$. Notons, pour tout $i$, $b'_i$ le nombre de coefficients égaux à $1$ sur la $i$-ème diagonale de $M'$. Il existe également $k'$ tel que $b'_{k'} < t_{k'}$, pour tout $i<k'$, $b'_i \leq 1$ et pour tout $i>k'$, $b'_i=t_i$. Si $k'<k$, alors pour tout $i>k$, $b_i= b'_i$ donc : 
 
 %\begin{align*}
 %something\\
@@ -349,7 +349,7 @@ b_k 2^k + \underbrace{\sum\limits_{i=0}^{k-1} b_i 2^i}_{\text{$< 2^k$ car $b_i \
 \end{align*}
 contradiction, car $b_k<t_k$. D'où $k \leq k'$, et par symétrie $k = k'$. Mais alors pour tout $i<k$, $b_i = b'_i$ par unicité de la décomposition en base $2$ du reste de $N$ modulo $2^k$, et pour tout $i>k$, $b_i = b'_i = t_i$, donc on a aussi $b_k = b'_k$ (car $\sum\limits_{i=0}^{r-1} b_i 2^i = \sum\limits_{i=0}^{r-1} b'_i 2^i = N$).
 
-D'où $M' \sim M$. On a donc montré que pour toute matrice $M"$ telle que $\sigma=N$, si $M'$ est la matrice avec le moins de $1$ dans la classe d'équivalence de $M"$, $M"\sim M' \sim M$. D'où par transitivité, toute matrice telle que $\sigma=N$ est équivalente à $M$, donc toutes les matrices telles que $\sigma=N$ sont équivalentes entre elles.
+D'où $M' \sim M$. On a donc montré que pour toute matrice $M"$ telle que $\sigma(M")=N$, si $M'$ est la matrice avec le moins de $1$ dans la classe d'équivalence de $M"$, $M"\sim M' \sim M$. D'où par transitivité, toute matrice pour laquelle $\sigma=N$ est équivalente à $M$, donc toutes les matrices pour lesquelles $\sigma=N$ sont équivalentes entre elles.
 
 
 
@@ -370,6 +370,16 @@ Le fait que les $1$ isolés ne soient pas encouragés à se déplacer est d'auta
 On peut donc envisager l'amélioration suivante : plutôt que d'utiliser une grande matrice, on suppose connue la taille des diviseurs. Si $n$ est la taille du nombre à factoriser, il y a au plus $2n-1$ tailles de matrices possibles à essayer car la somme des tailles des diviseurs vaut nécessairement $n$ ou $n+1$ et on ignore les matrices dont une dimension vaut $1$ car on cherche des diviseurs non-triviaux. On lance donc en parallèle l'algorithme sur les $2n-1$ matrices différentes, et on arrête l'exécution dès qu'une solution est trouvée pour l'une des tailles. Quitte à supposer impair le nombre à factoriser, on impose de plus qu'il y ait un $1$ à chacun des quatre coins (c'est une condition nécessaire pour qu'une matrice dont les dimensions sont exactement les tailles de deux facteurs soit solution : chaque facteur commence par un $1$ car les zéros à gauche ne sont pas significatifs, et finissent par un $1$ car les diviseurs d'un nombre impair sont impairs). 
 
 \medskip
-Il apparaît que l'exécution de l'algorithme est significativement plus rapide qu'avec la grande matrice. Les nombres dont l'un des facteurs est très petit deviennent très faciles à traiter, car la matrice de la bonne taille est très petite, et le calcul y aboutit donc rapidement. Les nombres les plus difficiles à traiter deviennent, comme pour les algorithmes classiques de factorisation, les produits de deux nombres premiers de même taille : en effet, la seule matrice pour laquelle l'algorithme peut aboutir est alors de taille maximale. Même dans ce cas, l'exécution est plus rapide car on ne perd plus de temps à cause des $1$ situés dans une zone inutile de la matrice. On gagne ainsi un facteur $100$ sur le temps de factorisation de $329$ ($7\times 47$), largement de quoi justifier de lancer simultanément une quinzaine d'exécutions. % TODO : stats plus détaillées ici ?
+Il apparaît que l'exécution de l'algorithme est significativement plus rapide qu'avec la grande matrice. Les nombres dont l'un des facteurs est très petit deviennent très faciles à traiter, car la matrice de la bonne taille est très petite, et le calcul y aboutit donc rapidement. Les nombres les plus difficiles à traiter deviennent, comme pour les algorithmes classiques de factorisation, les produits de deux nombres premiers de même taille : en effet, la seule matrice pour laquelle l'algorithme peut aboutir est alors de taille maximale. Même dans ce cas, l'exécution est plus rapide car on ne perd plus de temps à cause des $1$ situés dans une zone inutile de la matrice. On gagne ainsi un facteur $100$ sur le temps de factorisation de $329$ ($ =7\times 47$), largement de quoi justifier le lancement simultané d'une quinzaine d'exécutions. % TODO : stats plus détaillées ici ?
+
+
+
+\nocite{Pom96}
+\nocite{BahiC06}
+\nocite{Fat13}
+
+\bibliographystyle{plain}
+\bibliography{bibfact}
 
 \end{document}
+

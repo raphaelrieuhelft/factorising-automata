@@ -1,0 +1,29 @@
+@comment{x-kbibtex-personnameformatting=<%l><, %f>}
+
+@article{Pom96,
+	author = "Pomerance, Carl",
+	journal = "Notices Amer. Math. Soc",
+	pages = "1473--1485",
+	title = "{A tale of two sieves}",
+	volume = "43",
+	year = "1996"
+}
+
+@article{BahiC06,
+	abstract = "dblp",
+	added-at = "2008-03-11T00:00:00.000+0100",
+	author = "Bahi, Jacques M. and Contassot-Vivier, Sylvain",
+	date = "2008-03-11",
+	interhash = "a6258baf240d85a674db2b64a4178557",
+	intrahash = "04e95654709a72d2673494cfba6ffebd",
+	journal = "IEEE Transactions on Neural Networks",
+	keywords = "dblp",
+	number = 2,
+	pages = "397--408",
+	title = "{Basins of attraction in fully asynchronous discrete-time discrete-state dynamic networks.}",
+	url = "http://dblp.uni-trier.de/db/journals/tnn/tnn17.html#BahiC06; http://doi.ieeecomputersociety.org/10.1109/TNN.2005.863413; http://www.bibsonomy.org/bibtex/204e95654709a72d2673494cfba6ffebd/dblp",
+	volume = 17,
+	x-fetchedfrom = "Bibsonomy",
+	year = 2006
+}
+
