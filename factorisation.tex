@@ -353,7 +353,7 @@ D'où $M' \sim M$. On a donc montré que pour toute matrice $M"$ telle que $\sig
 
 
 
-\subsection*{Performances et observations}
+\section*{Performances et observations}
 
 Les performances varient grandement selon l'entier à factoriser : sa dé\-composition en facteurs premiers, et plus généralement la distribution de $1$ dans la ou les solutions semblent être des facteurs déterminants. Ainsi, les nombres les plus faciles semblent être ceux qui ont le plus de diviseurs, ce qui s'explique par le fait que plus de solutions existent pour de tels nombres. Si on ne s'intéresse qu'aux nombres qui sont le produit de deux nombres premiers, les nombres pour lesquelles les matrices solutions du problème comportent peu de $1$ semblent les plus difficiles : l'algorithme trouve en $10^6$ pas de temps en moyenne un diviseur de $493$ ($ = 17\times 29$), mais pour factoriser $362$ ($ = 2\times 181$), il lui faut $10^9$ étapes ! Ceci est dû au fait que la densité de $1$ varie très peu au cours du temps (elle oscille autour d'une densité moyenne, et les solutions pour lesquelles la densité finale en est éloignée sont difficiles à trouver). 
 
@@ -365,14 +365,41 @@ De plus, les conditions que l'on s'est donné pour appliquer les règles tendent
  
 Le fait que les $1$ isolés ne soient pas encouragés à se déplacer est d'autant plus gênant qu'on a choisi une taille de matrice nécessairement trop grande pour les facteurs que l'on va trouver. En effet, on a pris une matrice de taille $n-1 \times \lceil \frac{n}{2} \rceil$ pour un nombre de taille $n$ afin d'assurer de pouvoir trouver n'importe quel diviseur non trivial, mais la somme des longueurs des deux facteurs que l'on va trouver est au plus $n+1$. Par conséquent, tous les $1$ d'une matrice solution sont contenus dans un rectangle dont l'un des sommets est le coin supérieur droit et dont le périmètre est limité : s'il y a un $1$ dans le coin inférieur droit, il ne peut y en avoir aucun dans toute la moitié gauche de la matrice ! Si, dans une exécution de l'algorithme, aucun $1$ n'apparaît typiquement dans le quart inférieur gauche pour $p$ assez petit, il y en a fréquemment à la fois dans le coin supérieur gauche et inférieur droit, ce qui fait perdre beaucoup de temps. 
 
-\subsection*{Une amélioration}
+%TODO : comparatif entre différents entiers
+
+
+\section*{Quelques améliorations}
+
+\subsection*{Fixer la taille des diviseurs recherchés}
 
 On peut donc envisager l'amélioration suivante : plutôt que d'utiliser une grande matrice, on suppose connue la taille des diviseurs. Si $n$ est la taille du nombre à factoriser, il y a au plus $2n-1$ tailles de matrices possibles à essayer car la somme des tailles des diviseurs vaut nécessairement $n$ ou $n+1$ et on ignore les matrices dont une dimension vaut $1$ car on cherche des diviseurs non-triviaux. On lance donc en parallèle l'algorithme sur les $2n-1$ matrices différentes, et on arrête l'exécution dès qu'une solution est trouvée pour l'une des tailles. Quitte à supposer impair le nombre à factoriser, on impose de plus qu'il y ait un $1$ à chacun des quatre coins (c'est une condition nécessaire pour qu'une matrice dont les dimensions sont exactement les tailles de deux facteurs soit solution : chaque facteur commence par un $1$ car les zéros à gauche ne sont pas significatifs, et finissent par un $1$ car les diviseurs d'un nombre impair sont impairs). 
 
 \medskip
 Il apparaît que l'exécution de l'algorithme est significativement plus rapide qu'avec la grande matrice. Les nombres dont l'un des facteurs est très petit deviennent très faciles à traiter, car la matrice de la bonne taille est très petite, et le calcul y aboutit donc rapidement. Les nombres les plus difficiles à traiter deviennent, comme pour les algorithmes classiques de factorisation, les produits de deux nombres premiers de même taille : en effet, la seule matrice pour laquelle l'algorithme peut aboutir est alors de taille maximale. Même dans ce cas, l'exécution est plus rapide car on ne perd plus de temps à cause des $1$ situés dans une zone inutile de la matrice. On gagne ainsi un facteur $100$ sur le temps de factorisation de $329$ ($ =7\times 47$), largement de quoi justifier le lancement simultané d'une quinzaine d'exécutions. % TODO : stats plus détaillées ici ?
 
+%TODO : comparatif entre différents entiers
+%TODO : comparatif entre fact0 et fact_fixed_lengths
 
+\subsection*{Permettre des échanges à plus longue distance}
+
+Les transformations préservant $\sigma$ qu'on a introduites plus haut sont très localisées : on peut envisager de remplacer les règles \textbf{R1} et \textbf{R2} par une règle plus générale, qui consiste à intervertir deux cellules situées sur la même diagonale descendante. De même, on peut remplacer les règles \textbf{R3} et \textbf{R5} par une règle qui consiste à échanger un $1$ d'une diagonale contre deux sur la diagonale à sa droite, et les règles \textbf{R4} et \textbf{R6} par une règle qui consiste à échanger un $0$ d'une diagonale contre deux sur la diagonale à sa droite. Les transformations du système sont ainsi plus équitables au sens où on peut maintenant atteindre, en appliquant une seule règle, des positions qu'on ne pouvait précédemment atteindre que par une séquence précise de transformations locales. 
+
+Il semble cependant que ce changement n'améliore pas significativement le temps mis pour atteindre une solution : pour certains entiers à factoriser, on constate une amélioration de l'ordre de $10\%$, mais pour d'autres, le temps de convergence subit au contraire une augmentation du même ordre.   
+
+%TODO : comparatif entre fact_fixed_lengths et fact_global
+
+\subsection*{N'utiliser que des informations locales}
+
+Dans l'algorithme ci-dessus, on utilise des informations globales sur le système lorsqu'on décide si on applique une transformation : en effet, on décide si une case est sûre ou dangereuse en comptant les $1$ sur la ligne et la diagonale concernées. On peut en fait ajuster l'algorithme pour se restreindre à utiliser uniquement des informations locales, en mettant en place un système de signaux analogue à celui utilisé pour le problème des $n$ reines. 
+
+On procède de la façon suivante : les cellules de la matrice, en plus de contenir un $0$ ou un $1$, peuvent contenir des signaux en provenance des quatre directions $W$, $E$, $NW$ et $SE$. On souhaite qu'un signal en provenance d'une certaine direction soit présent sur une cellule s'il existe un coefficient égal à $1$ dans cette direction. Ainsi, une case est dite \emph{sûre} si elle ne contient pas de signal en provenance du nord-ouest ni du sud-est, ou bien si elle ne contient pas de signal en provenance de l'ouest ni de l'est. Dans le cas contraire, elle est dite \emph{dangereuse}. On a ainsi traduit l'ancienne définition d'une cellule sûre (pas de $1$ sur la même diagonale, ou bien pas de $1$ sur la même ligne) en terme de signaux.
+
+À chaque pas de temps, on choisit une cellule $c$ à mettre à jour et on commence par mettre à jour ses signaux de la même façon que pour le problème des $n$ reines : pour chaque direction $d$, si $c'$ est la cellule voisine de $c$ dans la direction $d$, le signal en $c$ en provenance de la direction $d$ devient présent si $c'$ contient un $1$, et prend le même état (présent ou absent) que celui de $c'$ en direction de $d$ sinon.
+Après avoir mis les signaux de $c$ à jour, on applique l'algorithme précédent pour décider si on applique une transformation de $\Gamma$, en utilisant la nouvelle définition de case sûre/dangereuse. 
+
+Comme on pouvait s'y attendre, on constate une déterioration des performances lorsqu'on se restreint ainsi à des informations locales. Cependant, cette augmentation du temps mis à atteindre une solution reste raisonnable, ce qui est prometteur dans le sens où se restreindre à des informations locales peut permettre de paralléliser le système en effectuant plusieurs mises à jour simultanées, sans conflits à condition que les zones affectées par les différentes mises à jour soient disjointes. Ceci était moins efficace avec l'algorithme initial du fait de la nécessité de garder une trace du nombre total de $1$ sur chaque ligne et diagonale, ce qui impose de centraliser les mises à jour sous peine d'en effectuer certaines avec des informations erronées.
+
+%TODO : comparatif entre fact_fixed_lengths et fact_sigs
 
 \nocite{Pom96}
 \nocite{BahiC06}
