@@ -5,7 +5,7 @@ open Unix
 
 let n = ref 6 
 let p_cheat = ref 1.
-let p_ag = ref 0.05
+let p_ag = ref 0.01
 
 let nrows = ref ((!n/2)+1)
 let ncols = ref ((!n)-1)
@@ -268,9 +268,12 @@ let _ = Arg.parse options (fun s -> let n = (int_of_string s) in
  ""
 *)
 
-let _ = Arg.parse options (fun s -> 
+(*let _ = Arg.parse options (fun s -> 
   List.iter (fun p-> 
     p_ag:=p;
     avg (int_of_string s))
     [0.001; 0.01; 0.05; 0.1; 0.2]
 ) ""
+*)
+
+let _ = Arg.parse options (fun s -> avg (int_of_string s)) ""

@@ -5,7 +5,7 @@ open Unix
 
 let n = ref 7 
 let p_cheat = ref 1.
-let p_ag = ref 0.05
+let p_ag = ref 0.01
 
 let nrows = ref 3
 let ncols = ref 4
@@ -260,13 +260,13 @@ let find_factors target rows cols  =
   if (check_fini (t, rows, cols))
   then (fini := true;  print_board t);
   while (not !fini) do
-    if (!time mod 1000000 = 0) then (Unix.sleep 1; print_board t);
+    (*if (!time mod 1000000 = 0) then (Unix.sleep 1; print_board t);*)
     (*if !time > !timeout then fini := true;*)
     incr time;
     if (update (t, rows, cols))
 	then ((*print_board t; Unix.sleep 3;*)
 	  if (check_fini (t, rows, cols))
-	  then (fini := true;  print_board t)
+	  then (fini := true(*;  print_board t*))
 	)
   done;
   read_result (t,rows, cols)
@@ -308,7 +308,17 @@ let iter nmin nmax =
     stats i
   done*)
 
+let avg n r c = 
+  let tot = ref 0 in
+  for i = 1 to !samplesize do 
+    let _ = find_factors n r c in
+    tot := !tot + !time
+  done;
+  Format.printf "Temps moyen = %d pour n = %d, p_ag = %f@." (!tot /
+  !samplesize) n !p_ag
 
 let _ = Arg.parse options (fun _ -> ()) "";
-  Scanf.scanf  "%d %d %d" (fun n r c -> print_facts n (find_factors n r c))
+ (* Scanf.scanf  "%d %d %d" (fun n r c -> print_facts n (find_factors
+ n r c))*)
+  Scanf.scanf "%d %d %d" avg
 

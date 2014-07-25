@@ -239,7 +239,7 @@ Une formulation équivalente de l'égalité des lignes non-nulles est qu'un coef
 
 Pour diriger les zéros vers les cases sûres, on voudrait n'effectuer que des mouvements qui sortent un zéro d'une case dangereuse, mais cette restriction est trop forte : il existe alors des situations bloquées, la figure~\ref{fig:stuck} en donne un exemple. Il est donc nécessaire d'autoriser au moins certains mouvements qui ne sont pas directement utiles en ce sens. Par ailleurs, on pourrait vouloir restreindre les mouvements des zéros vers des cases dangereuses, de la même façon que pour le problème des $n$ reines. Cependant, il se forme alors des blocs stables de $1$ : les zéros qui viennent remplacer un $1$ du bord du bloc en sont rapidement éjectés (les seules cases sûres proches sont à l'extérieur du bloc). 
 
-On prend donc le parti de ne pas restreindre les mouvements des zéros vers des cases dangereuses, et on se donne une probabilité d'agitation $p$ : un mouvement valide mais qui ne sort pas un zéro d'une case dangereuse est effectué avec une probabilité $p$, alors qu'un mouvement valide qui sort un zéro d'une case dangereuse est toujours effectué. 
+On prend donc le parti de ne pas restreindre les mouvements des zéros vers des cases dangereuses, et on se donne une probabilité d'agitation $p$ : un mouvement valide mais qui ne sort pas un zéro d'une case dangereuse est effectué avec une probabilité $p$, alors qu'un mouvement valide qui sort un zéro d'une case dangereuse est toujours effectué. Dans tous les cas, on ne s'intéresse pas au caractère sûr ou dangereux de la case de destination. 
 
 
 
