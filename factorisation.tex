@@ -73,7 +73,7 @@
 
 
 \graphicspath{{.}}
-
+\newcommand{\e}[1]{\ensuremath{\times 10^{#1}}}
 
 \begin{document}
 \floatpagestyle{plain}
@@ -346,13 +346,7 @@ On se donne également un ensemble $\Gamma \subset \E^{\E\times\La}$ de transfor
 
 Une formulation équivalente de l'égalité des lignes non-nulles est qu'un coefficient situé sur la même ligne qu'un 1 et sur la même colonne qu'un 1 vaut nécessairement 1 dans une matrice qui représente une multiplication. On va donc appliquer aléatoirement des règles conservant $\sigma$, en privilégiant les mouvements qui retirent les zéros de telles cases. Dans la suite, on dira qu'une case est \emph{sûre} s'il n'y a pas de~$1$ sur la même ligne ou s'il n'y en a pas sur la même colonne, et \emph{dangereuse} s'il y a à la fois un~$1$ sur la même ligne et un sur la même colonne.
 
-Pour diriger les zéros vers les cases sûres, on voudrait n'effectuer que des mouvements qui sortent un zéro d'une case dangereuse, mais cette restriction est trop forte : il existe alors des situations bloquées, la figure~\ref{fig:stuck} en donne un exemple. Il est donc nécessaire d'autoriser au moins certains mouvements qui ne sont pas directement utiles en ce sens. Par ailleurs, on pourrait vouloir restreindre les mouvements des zéros vers des cases dangereuses, de la même façon que pour le problème des~$n$ reines. Cependant, il se forme alors des blocs stables de~$1$ : les zéros qui viennent remplacer un~$1$ du bord du bloc en sont rapidement éjectés (les seules cases sûres proches sont à l'extérieur du bloc). 
-
-On prend donc le parti de ne pas restreindre les mouvements des zéros vers des cases dangereuses, et on se donne une probabilité d'agitation~$p$ : un mouvement valide mais qui ne sort pas un zéro d'une case dangereuse est effectué avec une probabilité~$p$, alors qu'un mouvement valide qui sort un zéro d'une case dangereuse est toujours effectué. Dans tous les cas, on ne s'intéresse pas au caractère sûr ou dangereux de la case de destination. 
-
-
-
-\begin{figure}
+\begin{floatingfigure}[r]{0.5\textwidth}
 \centering
 \begin{tabular}{cccccccc}
 0&1&0&0&1&1&0&\fbox 0\\ 
@@ -365,7 +359,13 @@ On prend donc le parti de ne pas restreindre les mouvements des zéros vers des 
 
 \caption{Exemple de situation bloquée si on interdit les mouvements ne déplaçant pas les zéros menacés (encadrés) : aucune des règles de la Figure~$3$ ne s'applique à eux.}
 \label{fig:stuck}
-\end{figure}
+\end{floatingfigure}
+Pour diriger les zéros vers les cases sûres, on voudrait n'effectuer que des mouvements qui sortent un zéro d'une case dangereuse, mais cette restriction est trop forte : il existe alors des situations bloquées, la figure~\ref{fig:stuck} en donne un exemple. Il est donc nécessaire d'autoriser au moins certains mouvements qui ne sont pas directement utiles en ce sens. Par ailleurs, on pourrait vouloir restreindre les mouvements des zéros vers des cases dangereuses, de la même façon que pour le problème des~$n$ reines. Cependant, il se forme alors des blocs stables de~$1$ : les zéros qui viennent remplacer un~$1$ du bord du bloc en sont rapidement éjectés (les seules cases sûres proches sont à l'extérieur du bloc). 
+
+On prend donc le parti de ne pas restreindre les mouvements des zéros vers des cases dangereuses, et on se donne une probabilité d'agitation~$p$ : un mouvement valide mais qui ne sort pas un zéro d'une case dangereuse est effectué avec une probabilité~$p$, alors qu'un mouvement valide qui sort un zéro d'une case dangereuse est toujours effectué. Dans tous les cas, on ne s'intéresse pas au caractère sûr ou dangereux de la case de destination. 
+
+
+
 
 À chaque pas de temps, on choisit donc une case de $\La$ et une règle de $\Gamma$ au hasard, et on applique éventuellement la règle à la case. À titre d'exemple, si on choisit, dans une configuration~$x$, la case $(i,j)$ et la règle \textbf{R1}, la nouvelle configuration est \[
 \textbf{R1}(x,(i,j))=
@@ -405,7 +405,6 @@ On applique une règle si au moins un des zéros concernés est sur une case dan
 
 avec $x''$ la configuration obtenue à partir de~$x$ en changeant les valeurs de $x_{i,j}$, $x_{i-1,j}$ et $x_{i,j+1}$.
 
-\medskip
 
 Du fait de l'existence de mouvements spontanés, il n'y a pas de point fixe à proprement parler : on est contraint de vérifier après chaque mouvement si la matrice représente une multiplication valide, et d'arrêter les mises à jour le cas échéant. 
 
@@ -476,16 +475,12 @@ Toutes les matrices de même somme sont donc équivalentes pour $\sim$, donc on 
 
 Les performances varient grandement selon l'entier à factoriser : sa dé\-composition en facteurs premiers, et plus généralement la distribution de~$1$ dans la ou les solutions semblent être des facteurs déterminants. Ainsi, les nombres les plus faciles semblent être ceux qui ont le plus de diviseurs, ce qui s'explique par le fait que plus de solutions existent pour de tels nombres. Si on ne s'intéresse qu'aux nombres qui sont le produit de deux nombres premiers, les nombres pour lesquelles les matrices solutions du problème comportent peu de~$1$ semblent les plus difficiles : l'algorithme trouve en $10^6$ pas de temps en moyenne un diviseur de $493$ ($ = 17\times 29$), mais pour factoriser $362$ ($ = 2\times 181$), il lui faut $10^9$ étapes ! Ceci est dû au fait que la densité de~$1$ varie très peu au cours du temps (elle oscille autour d'une densité moyenne, et les solutions pour lesquelles la densité finale en est éloignée sont difficiles à trouver). 
 
-\medskip
-
 De plus, les conditions que l'on s'est donné pour appliquer les règles tendent à chasser les zéros menacés, mais rien ne pousse particulièrement les~$1$ isolés à se déplacer. Il est donc relativement difficile de trouver les positions pour lesquelles les~$1$ sont tous à un endroit précis de la matrice : ainsi, pour les nombres de la forme $2^kp$ avec~$p$ premier, la matrice aura tous ses~$1$ sur la même ligne (la~$k$-ième) ou bien sur la même diagonale. Ainsi, dans les cas ``faciles'' tels que $493$, une solution est atteinte environ $40$ fois plus vite avec $p=0.05$ qu'avec $p=1$ (cas où le système applique des règles valides sans tenir compte du caractère dangereux ou sûr des cases), mais dans les cas difficiles tels que $362$, les performances sont plutôt meilleures avec la marche aléatoire $p=1$. Plus généralement, l'évolution du système n'est dirigée que faiblement, notamment parce qu'on a décidé de ne pas restreindre les déplacements de zéros vers des cases dangereuses et parce que le système n'a pas de mémoire.
-
-\medskip
  
 Le fait que les~$1$ isolés ne soient pas encouragés à se déplacer est d'autant plus gênant qu'on a choisi une taille de matrice nécessairement trop grande pour les facteurs que l'on va trouver. En effet, on a pris une matrice de taille $n-1 \times \lceil \frac{n}{2} \rceil$ pour un nombre de taille~$n$ afin d'assurer de pouvoir trouver n'importe quel diviseur non trivial, mais la somme des longueurs des deux facteurs que l'on va trouver est au plus~$n+1$. Par conséquent, tous les~$1$ d'une matrice solution sont contenus dans un rectangle dont l'un des sommets est le coin supérieur droit et dont le périmètre est limité : s'il y a un~$1$ dans le coin inférieur droit, il ne peut y en avoir aucun dans toute la moitié gauche de la matrice ! Si, dans une exécution de l'algorithme, aucun~$1$ n'apparaît typiquement dans le quart inférieur gauche pour~$p$ assez petit, il y en a fréquemment à la fois dans le coin supérieur gauche et inférieur droit, ce qui fait perdre beaucoup de temps. 
 
 
-\begin{figure}
+\begin{figure}[hbt]
   \centering
   \begin{tikzpicture}
   \begin{axis}[%
@@ -502,7 +497,7 @@ Le fait que les~$1$ isolés ne soient pas encouragés à se déplacer est d'auta
         /pgf/number format/precision=5,
         inner sep=0pt, anchor=north east, rotate=45 },
       legend entries = {221, 247, 319, 377, 403, 493},
-      legend style = {at={(-0.5,0.5)}, anchor=west}]
+      legend style = {at={(1.3,0.5)}, anchor=east}]
       \addplot coordinates {
         (0.001, 4.3e5) (0.01, 1.6e5) (0.05, 2.4e5) (0.1, 2.4e5) %(0.2, 4.6e5)
       }; 
@@ -530,19 +525,34 @@ Le fait que les~$1$ isolés ne soient pas encouragés à se déplacer est d'auta
   \label{fig:p_ag}
 \end{figure}  
 
-
-
 \section{Quelques améliorations}
 
 \subsection{Fixer la taille des diviseurs recherchés}
 
-On peut donc envisager l'amélioration suivante : plutôt que d'utiliser une grande matrice, on suppose connue la taille des diviseurs. Si~$n$ est la taille du nombre à factoriser, il y a au plus $2n-1$ tailles de matrices possibles à essayer car la somme des tailles des diviseurs vaut nécessairement~$n$ ou $n+1$ et on ignore les matrices dont une dimension vaut~$1$ car on cherche des diviseurs non-triviaux. On lance donc en parallèle l'algorithme sur les $2n-1$ matrices différentes, et on arrête l'exécution dès qu'une solution est trouvée pour l'une des tailles. Quitte à supposer impair le nombre à factoriser, on impose de plus qu'il y ait un~$1$ à chacun des quatre coins (c'est une condition nécessaire pour qu'une matrice dont les dimensions sont exactement les tailles de deux facteurs soit solution : chaque facteur commence par un~$1$ car les zéros à gauche ne sont pas significatifs, et finissent par un~$1$ car les diviseurs d'un nombre impair sont impairs). 
+On peut donc envisager l'amélioration suivante : plutôt que d'utiliser une grande matrice, on suppose connue la taille des diviseurs. Si~$n$ est la taille du nombre à factoriser, il y a au plus $4n-2$ tailles de matrices possibles à essayer car la somme des tailles des diviseurs vaut nécessairement~$n$ ou $n+1$ et on ignore les matrices dont une dimension vaut~$1$ car on cherche des diviseurs non-triviaux. On lance donc en parallèle l'algorithme sur les $4n-2$ matrices différentes, et on arrête l'exécution dès qu'une solution est trouvée pour l'une des tailles. Quitte à supposer impair le nombre à factoriser, on impose de plus qu'il y ait un~$1$ à chacun des quatre coins (c'est une condition nécessaire pour qu'une matrice dont les dimensions sont exactement les tailles de deux facteurs soit solution : chaque facteur commence par un~$1$ car les zéros à gauche ne sont pas significatifs, et finissent par un~$1$ car les diviseurs d'un nombre impair sont impairs). 
+Il apparaît que l'exécution de l'algorithme est significativement plus rapide qu'avec la grande matrice. Les nombres dont l'un des facteurs est très petit deviennent très faciles à traiter, car la matrice de la bonne taille est très petite, et le calcul y aboutit donc rapidement. Les nombres les plus difficiles à traiter deviennent, comme pour les algorithmes classiques de factorisation, les produits de deux nombres premiers de même taille : en effet, la seule matrice pour laquelle l'algorithme peut aboutir est alors de taille maximale. Même dans ce cas, l'exécution est plus rapide car on ne perd plus de temps à cause des~$1$ situés dans une zone inutile de la matrice. %On gagne ainsi un facteur $100$ sur le temps de factorisation de $329$ ($ =7\times 47$), largement de quoi justifier le lancement simultané d'une quinzaine d'exécutions. % TODO : stats plus détaillées ici ?
 
-\medskip
-Il apparaît que l'exécution de l'algorithme est significativement plus rapide qu'avec la grande matrice. Les nombres dont l'un des facteurs est très petit deviennent très faciles à traiter, car la matrice de la bonne taille est très petite, et le calcul y aboutit donc rapidement. Les nombres les plus difficiles à traiter deviennent, comme pour les algorithmes classiques de factorisation, les produits de deux nombres premiers de même taille : en effet, la seule matrice pour laquelle l'algorithme peut aboutir est alors de taille maximale. Même dans ce cas, l'exécution est plus rapide car on ne perd plus de temps à cause des~$1$ situés dans une zone inutile de la matrice. On gagne ainsi un facteur $100$ sur le temps de factorisation de $329$ ($ =7\times 47$), largement de quoi justifier le lancement simultané d'une quinzaine d'exécutions. % TODO : stats plus détaillées ici ?
-
-%TODO : comparatif entre différents entiers
-%TODO : comparatif entre fact0 et fact_fixed_lengths
+\begin{floatingfigure}[r]{0.5\textwidth}
+\centering
+\[
+\begin{array}{r|l|l}
+N&\text{algo initial}&\text{avec amélioration}\\
+\hline
+\rule{0pt}{3ex}   221&1\e{6}&8\e{4}\\
+403&8\e{4}&1\e{4}\\
+493&5\e{5}&1\e{5}\\
+635& >10^9&3\e{5}\\
+893&3\e{6}&2\e{5}\\
+899&1\e{6}&8\e{3}\\
+901&2\e{7}&3\e{6}\\
+923& >10^9&3\e{5}
+\end{array}
+\]
+\caption{Temps moyen mis pour atteindre une solution (en nombre d'étapes).}
+\label{fig:fixedlengths}
+\end{floatingfigure}
+On a représenté sur la figure~\ref{fig:fixedlengths} les temps moyens mis pour atteindre une solution pour certaines valeurs de $N$ par l'algorithme initial et par l'algorithme dans lequel on suppose connue la taille des diviseurs, lancé avec la combinaison de tailles la plus favorable en moyenne. On tient compte de l'ordre des tailles : en effet, échanger les dimensions de la matrice revient à transposer la matrice solution, mais ce n'est pas le cas de la configuration initiale. Ainsi, il peut y avoir une différence de performance significative : trouver les diviseurs de $901$ ($=17 \times 53$) est en moyenne cinq fois plus rapide sur une matrice de taille $6\times 5$ que sur une matrice de taille $5 \times 6$.
+On constate que la différence de performance avec l'algorithme initial semble s'accentuer quand $N$ croît : cette amélioration semble permettre à l'algorithme de passer beaucoup mieux à l'échelle.
 
 \subsection{Permettre des échanges à plus longue distance}
 
