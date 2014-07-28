@@ -84,7 +84,7 @@
 
 
 
-\section*{Position du problème}
+\section{Position du problème}
 
 
 On cherche un système dynamique discret qui, étant donné un entier non-premier, trouve un de ses diviseurs non-triviaux. On se base sur la multiplication binaire. En effet, on observe qu'une matrice à coefficients dans $\{0,1\}$ peut s'interpréter comme une multiplication binaire si ses lignes non-nulles sont égales entre elles, comme illustré dans la figure~$1$. Les colonnes non-nulles sont alors aussi égales entre elles, et les deux facteurs de la multiplication sont alors lisibles, en base~$2$, sur les lignes non-nulles pour l'un, et de bas en haut sur les colonnes non-nulles pour l'autre. Si on pose leur multiplication, toujours en base~$2$, on retrouve en effet la matrice de départ décalée d'un cran par ligne vers la gauche (cf. Figure~\ref{fig:ExShift}).
@@ -156,7 +156,7 @@ $=55$
 
 L'idée est donc de partir d'une matrice à coefficients dans $\{0,1\}$ dont la somme vaut le nombre qu'on cherche à factoriser, et de lui appliquer des transformations qui préservent la somme comme invariant jusqu'à atteindre une matrice qui représente une multiplication. Ainsi, notre système n'a pas à vérifier que le produit de cette multiplication est l'entier à factoriser, ce qui simplifie considérablement sa conception.
 
-\section*{Un algorithme}
+\section{Un algorithme}
 
 Soit~$n$ le nombre de chiffres en base~$2$ du nombre composé~$N$ dont on cherche un diviseur non-trivial. On se donne une matrice~$M$ de taille $ n-1 \times \lceil \frac{n}{2}\rceil$ de somme~$N$. Pour tous~$a$ et~$b$ différents de~$1$ et~$N$, et tels que $N = ab$,~$a$ ou~$b$ est de taille inférieure à $\lceil\frac{n}{2}\rceil$ et l'autre est de taille inférieure à $n-1$, on peut donc représenter leur multiplication à l'aide d'une matrice de la taille de~$M$. On l'initialise en recopiant les $n-1$ bits de poids faible de~$N$ sur la première ligne, et avec un~$1$ en position $(2,1)$ et des zéros partout ailleurs (cf. Figure \ref{fig:init}). On vérifie aisément que $\sigma(M)=N$. 
 
@@ -302,7 +302,7 @@ avec $x''$ la configuration obtenue à partir de~$x$ en changeant les valeurs de
 
 Du fait de l'existence de mouvements spontanés, il n'y a pas de point fixe à proprement parler : on est contraint de vérifier après chaque mouvement si la matrice représente une multiplication valide, et d'arrêter les mises à jour le cas échéant. 
 
-\subsection*{Atteignabilité de la solution}
+\section{Atteignabilité de la solution}
 
 On cherche ici à montrer que la solution est accessible à partir de toute configuration initiale valide en appliquant uniquement les règles de $\Gamma$. On va en fait montrer un résultat un peu plus général : en appliquant les règles de $\Gamma$, il est possible de passer d'une matrice quelconque à n'importe quelle autre matrice de même somme. On suppose fixée la taille des matrices considérées, mais on ne la suppose pas nécessairement égale à celle qu'on utilise dans l'algorithme : cette généralisation permet d'adapter la preuve à des améliorations de l'algorithme.
 
@@ -365,7 +365,7 @@ Toutes les matrices de même somme sont donc équivalentes pour $\sim$, donc on 
 
 
 
-\section*{Performances et observations}
+\section{Performances et observations}
 
 Les performances varient grandement selon l'entier à factoriser : sa dé\-composition en facteurs premiers, et plus généralement la distribution de~$1$ dans la ou les solutions semblent être des facteurs déterminants. Ainsi, les nombres les plus faciles semblent être ceux qui ont le plus de diviseurs, ce qui s'explique par le fait que plus de solutions existent pour de tels nombres. Si on ne s'intéresse qu'aux nombres qui sont le produit de deux nombres premiers, les nombres pour lesquelles les matrices solutions du problème comportent peu de~$1$ semblent les plus difficiles : l'algorithme trouve en $10^6$ pas de temps en moyenne un diviseur de $493$ ($ = 17\times 29$), mais pour factoriser $362$ ($ = 2\times 181$), il lui faut $10^9$ étapes ! Ceci est dû au fait que la densité de~$1$ varie très peu au cours du temps (elle oscille autour d'une densité moyenne, et les solutions pour lesquelles la densité finale en est éloignée sont difficiles à trouver). 
 
@@ -428,9 +428,9 @@ Le fait que les~$1$ isolés ne soient pas encouragés à se déplacer est d'auta
 %TODO : comparatif entre différents entiers
 
 
-\section*{Quelques améliorations}
+\section{Quelques améliorations}
 
-\subsection*{Fixer la taille des diviseurs recherchés}
+\subsection{Fixer la taille des diviseurs recherchés}
 
 On peut donc envisager l'amélioration suivante : plutôt que d'utiliser une grande matrice, on suppose connue la taille des diviseurs. Si~$n$ est la taille du nombre à factoriser, il y a au plus $2n-1$ tailles de matrices possibles à essayer car la somme des tailles des diviseurs vaut nécessairement~$n$ ou $n+1$ et on ignore les matrices dont une dimension vaut~$1$ car on cherche des diviseurs non-triviaux. On lance donc en parallèle l'algorithme sur les $2n-1$ matrices différentes, et on arrête l'exécution dès qu'une solution est trouvée pour l'une des tailles. Quitte à supposer impair le nombre à factoriser, on impose de plus qu'il y ait un~$1$ à chacun des quatre coins (c'est une condition nécessaire pour qu'une matrice dont les dimensions sont exactement les tailles de deux facteurs soit solution : chaque facteur commence par un~$1$ car les zéros à gauche ne sont pas significatifs, et finissent par un~$1$ car les diviseurs d'un nombre impair sont impairs). 
 
@@ -440,7 +440,7 @@ Il apparaît que l'exécution de l'algorithme est significativement plus rapide 
 %TODO : comparatif entre différents entiers
 %TODO : comparatif entre fact0 et fact_fixed_lengths
 
-\subsection*{Permettre des échanges à plus longue distance}
+\subsection{Permettre des échanges à plus longue distance}
 
 Les transformations préservant l'invariant de somme introduites plus haut sont très localisées : on peut envisager de remplacer les règles \textbf{R1} et \textbf{R2} par une règle plus générale, qui consiste à intervertir deux cellules situées sur la même diagonale descendante. De même, on peut remplacer les règles \textbf{R3} et \textbf{R5} par une règle qui consiste à échanger un~$1$ d'une diagonale contre deux sur la diagonale à sa droite, et les règles \textbf{R4} et \textbf{R6} par une règle qui consiste à échanger un~$0$ d'une diagonale contre deux sur la diagonale à sa droite. Les transformations du système sont ainsi plus équitables au sens où on peut maintenant atteindre, en appliquant une seule règle, des positions qu'on ne pouvait précédemment atteindre que par une séquence précise de transformations locales. 
 
@@ -448,7 +448,7 @@ Il semble cependant que ce changement n'améliore pas significativement le temps
 
 %TODO : comparatif entre fact_fixed_lengths et fact_global
 
-\subsection*{N'utiliser que des informations locales}
+\subsection{N'utiliser que des informations locales}
 
 Dans l'algorithme ci-dessus, on utilise des informations globales sur le système lorsqu'on décide si on applique une transformation : en effet, on décide si une case est sûre ou dangereuse en comptant les~$1$ sur la ligne et la diagonale concernées. On peut en fait ajuster l'algorithme pour se restreindre à utiliser uniquement des informations locales, en mettant en place un système de signaux analogue à celui utilisé pour le problème des~$n$ reines. 
 
