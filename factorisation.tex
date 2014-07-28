@@ -1,10 +1,12 @@
 \documentclass[11pt, openany, a4paper]{article}
+\usepackage{etex}
 \usepackage{fullpage}
 \usepackage{pstricks,pstricks-add,pst-math,pst-xkey}
 \usepackage[frenchb]{babel}
 %\usepackage{slashbox}
 \usepackage{graphicx}
 \usepackage{amsmath,amssymb,amstext,amsthm}
+\usepackage{mathtools}
 %\usepackage{comment}
 \usepackage[utf8]{inputenc}
 \usepackage[OT1]{fontenc}
@@ -139,7 +141,7 @@ $M=$
 \end{tabular}
 \end{minipage}
 \quad
-\begin{minipage}[]{0.6\linewidth}
+\begin{minipage}[]{0.45\linewidth}
 $\sigma(M)=$
 \begin{tabular}{llllllll}
 &&&&1&1&0&1\\
@@ -189,48 +191,153 @@ On se donne également un ensemble $\Gamma \subset \E^{\E\times\La}$ de transfor
 
 %On se donne donc un ensemble $\Gamma$ de six transformations locales qui conservent $\sigma$. Elles sont représentées sur la figure~$3$. Plus 
 
-
-\begin{figure}
+\begin{figure}[hbt]
 \centering
+
+\resizebox{\textwidth}{!}{
+\begin{minipage}{0.4\textwidth}
 \[
-\begin{tabular}{cc}
-\textbf 1& \\
- &0\\
+\begin{pmatrix}
+.&.&\textbf 1&.\\
+.&.&.&0\\
+.&.&.&.\\
+\end{pmatrix}
+\mathrel{\mathop{\longrightleftarrows}^{\mathrm{R1}}_{\mathrm{R2}}}
+\begin{pmatrix}
+.&.&\textbf 0&.\\
+.&.&.&1\\
+.&.&.&.\\
+\end{pmatrix}
+\]
+
+\[
+\begin{pmatrix}
+.&.&0&.\\
+.&\textbf 1&0&.\\
+.&.&.&.\\
+\end{pmatrix}
+\mathrel{\mathop{\longrightleftarrows}^{\mathrm{R3}}_{\mathrm{R4}}}
+\begin{pmatrix}
+.&.&1&.\\
+.&\textbf 0&1&.\\
+.&.&.&.\\
+\end{pmatrix}
+\]
+
+\[
+\begin{pmatrix}
+.&\textbf 1&0&.\\
+.&.&.&0\\
+.&.&.&.\\
+\end{pmatrix}
+\mathrel{\mathop{\longrightleftarrows}^{\mathrm{R5}}_{\mathrm{R6}}}
+\begin{pmatrix}
+.&\textbf 0&1&.\\
+.&.&.&1\\
+.&.&.&.\\
+\end{pmatrix}
+\]%
+
+% \[
+% \begin{tabular}{cc}
+% \textbf 1&\\
+% &0\\
+% &\\
+% \end{tabular}
+% \mathrel{\mathop{\longrightleftarrows}^{\mathrm{R1}}_{\mathrm{R2}}}
+% \begin{tabular}{cc}
+% \textbf 0&\\
+% &1\\
+% &
+% \end{tabular}
+% \]
+
+% \[
+% \begin{tabular}{cc}
+% \textbf 1&\\
+% &0\\
+% &
+% \end{tabular}
+% \mathrel{\mathop{\longrightleftarrows}^{\mathrm{R1}}_{\mathrm{R2}}}
+% \begin{tabular}{cc}
+% \textbf 0&\\
+% &1\\
+% &
+% \end{tabular}
+% \]
+
+% \[
+% \begin{tabular}{cc}
+% \textbf 1&\\
+% &0\\
+% &
+% \end{tabular}
+% \mathrel{\mathop{\longrightleftarrows}^{\mathrm{R1}}_{\mathrm{R2}}}
+% \begin{tabular}{cc}
+% \textbf 0&\\
+% &1\\
+% &
+% \end{tabular}
+% \]
+
+
+\end{minipage}
+\qquad
+\begin{minipage}{0.6\textwidth}
+\[
+\begin{tabular}{lllllll}
+&&&.&.&\textbf 1&. \\
++&&.&.&.&0&\\
++&.&.&.&.&&\\
+\hline
 \end{tabular}
 \mathrel{\mathop{\longrightleftarrows}^{\mathrm{R1}}_{\mathrm{R2}}}
-\begin{tabular}{cc}
-\textbf 0& \\
- &1\\
+\begin{tabular}{lllllll}
+&&&.&.&\textbf 0&. \\
++&&.&.&.&1&\\
++&.&.&.&.&&\\
+\hline
 \end{tabular}
 \]
 
-
 \[
-\begin{tabular}{cc}
-0& \\
-\textbf 1&0\\
+\begin{tabular}{lllllll}
+&&&.&.&0&. \\
++&&.&.&\textbf 1&0&\\
++&.&.&.&.&&\\
+\hline
 \end{tabular}
 \mathrel{\mathop{\longrightleftarrows}^{\mathrm{R3}}_{\mathrm{R4}}}
-\begin{tabular}{cc}
-1& \\
-\textbf 0&1\\
+\begin{tabular}{lllllll}
+&&&.&.&1&. \\
++&&.&.&\textbf 0&1&\\
++&.&.&.&.&&\\
+\hline
 \end{tabular}
 \]
 
 \[
-\begin{tabular}{ccc}
-\textbf 1&0&\\
-&&0\\
+\begin{tabular}{lllllll}
+&&&.&\textbf 1&0&. \\
++&&.&.&.&0&\\
++&.&.&.&.&&\\
+\hline
 \end{tabular}
 \mathrel{\mathop{\longrightleftarrows}^{\mathrm{R5}}_{\mathrm{R6}}}
-\begin{tabular}{ccc}
-\textbf 0&1&\\
-&&1\\
+\begin{tabular}{lllllll}
+&&&.&\textbf 0&1&. \\
++&&.&.&.&1&\\
++&.&.&.&.&&\\
+\hline
 \end{tabular}
 \]
+%\caption{Illustration.}
+\end{minipage}}
 
 \caption{Transformations locales préservant l'invariant de somme.}
+
 \label{fig:rules}
+
 \end{figure}
 
 
@@ -423,9 +530,6 @@ Le fait que les~$1$ isolés ne soient pas encouragés à se déplacer est d'auta
   \label{fig:p_ag}
 \end{figure}  
 
-
-
-%TODO : comparatif entre différents entiers
 
 
 \section{Quelques améliorations}
