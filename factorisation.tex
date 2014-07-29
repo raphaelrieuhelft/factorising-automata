@@ -1,95 +1,12 @@
-\documentclass[11pt, openany, a4paper]{article}
-\usepackage{etex}
-\usepackage{fullpage}
-\usepackage{pstricks,pstricks-add,pst-math,pst-xkey}
-\usepackage[frenchb]{babel}
-%\usepackage{slashbox}
-\usepackage{graphicx}
-\usepackage{amsmath,amssymb,amstext,amsthm}
-\usepackage{mathtools}
-%\usepackage{comment}
-\usepackage[utf8]{inputenc}
-\usepackage[OT1]{fontenc}
-\usepackage{pgf,tikz}
-\usepackage{pgfplots}
-\usepackage{floatpag}
-\usepgfmodule{shapes}
-\usetikzlibrary{arrows,patterns}
-\usepackage[ps]{skak}
-\usepackage{chessboard}
-\usepackage{floatflt}
-\usepackage{import}
-\newcounter{moncompteur}
-\newtheorem{q}[moncompteur]{ \textbf{Question}}{}
-\newtheorem{prop}[moncompteur]{ \textbf{Proposition}}{}
-\newtheorem{df}[moncompteur]{ \textbf{Définition}}{}
-\newtheorem*{df*}{ \textbf{Définition}}{}
-\newtheorem{rem}[moncompteur]{ \textbf{Remarque}}{}
-\newtheorem{theo}[moncompteur]{ \textbf{Théorème}}{}
-\newtheorem{conj}[moncompteur]{ \textbf{Conjecture}}{}
-\newtheorem{cor}[moncompteur]{ \textbf{Corollaire}}{}
-\newtheorem{lm}[moncompteur]{ \textbf{Lemme}}{}
-%\newtheorem{nota}[moncompteur]{ \textbf{Notation}}{}
-%\newtheorem{conv}[moncompteur]{ \textbf{Convention}}{}
-\newtheorem{exa}[moncompteur]{ \textbf{Exemple}}{}
-\newtheorem{ex}[moncompteur]{ \textbf{Exercice}}{}
-%\newtheorem{app}[moncompteur]{ \textbf{Application}}{}
-%\newtheorem{prog}[moncompteur]{ \textbf{Algorithme}}{}
-%\newtheorem{hyp}[moncompteur]{ \textbf{Hypothèse}}{}
-\newenvironment{dem}{\noindent\textbf{Preuve}\\}{\flushright$\blacksquare$\\}
-\newcommand{\cg }{[\kern-0.15em [}
-\newcommand{\cd}{]\kern-0.15em]}
-\newcommand{\R}{\mathbb{R}}
-\newcommand{\K}{\mathbb{K}}
-\newcommand{\N}{\mathbb{N}}
-\newcommand{\Z}{\mathbb{Z}}
-\newcommand{\C}{\mathbb{C}}
-\newcommand{\U}{\mathbb{U}}
-\newcommand{\Q}{\mathbb{Q}}
-\newcommand{\B}{\mathbb{B}}
-\newcommand{\card}{\mathrm{card}}
-\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
-\pgfplotsset{compat=1.8}
-\newcommand{\La}{\mathcal{L}}
-\newcommand{\Ne}{\mathcal{N}}
-\newcommand{\D}{\mathcal{D}}
-\newcommand{\Ss}{\textsc{safestay}}
-\newcommand{\Sg}{\textsc{safego}}
-\newcommand{\M}{\textsc{move}}
-\newcommand{\E}{\mathcal{E}}
-\newcommand{\V}{\mathcal V}
-\setlength{\parindent}{0pt}
-\newcommand{\myrightleftarrows}[1]{\mathrel{\substack{\xrightarrow{#1} \\[-.6ex] \xleftarrow{#1}}}}
-\newcommand{\longrightleftarrows}{\myrightleftarrows{\rule{1cm}{0cm}}}
-
-\newcommand\tikzmark[1]{%
-  \tikz[overlay,remember picture,baseline] 
-  \node[anchor=base](#1){};}
-
-\newcommand\MyLine[3][]{%
-  \begin{tikzpicture}[overlay,remember picture]
-    \draw[#1] (#2.north west) -- (#3.south east);
-  \end{tikzpicture}}
-
-
-\graphicspath{{.}}
-\newcommand{\e}[1]{\ensuremath{\times 10^{#1}}}
-
-\begin{document}
-\floatpagestyle{plain}
-\renewcommand{\labelitemi}{$\bullet$}
-
-\title{Multiplication binaire et factorisation}
-\date{}
-\author{}
-\maketitle
-
-
-
+%\section{Introduction}
 \section{Position du problème}
+\label{sec:introfacto}
+
+...\cite{Pom96} \cite{BahiC06} \cite{Fat13}...
 
 
-On cherche un système dynamique discret qui, étant donné un entier non-premier, trouve un de ses diviseurs non-triviaux. On se base sur la multiplication binaire. En effet, on observe qu'une matrice à coefficients dans $\{0,1\}$ peut s'interpréter comme une multiplication binaire si ses lignes non-nulles sont égales entre elles, comme illustré dans la figure~$1$. Les colonnes non-nulles sont alors aussi égales entre elles, et les deux facteurs de la multiplication sont alors lisibles, en base~$2$, sur les lignes non-nulles pour l'un, et de bas en haut sur les colonnes non-nulles pour l'autre. Si on pose leur multiplication, toujours en base~$2$, on retrouve en effet la matrice de départ décalée d'un cran par ligne vers la gauche (cf. Figure~\ref{fig:ExShift}).
+
+On cherche un système dynamique discret qui, étant donné un entier non-premier, trouve un de ses diviseurs non-triviaux. On se base sur la multiplication binaire. En effet, on observe qu'une matrice à coefficients dans $\{0,1\}$ peut s'interpréter comme une multiplication binaire si ses lignes non-nulles sont égales entre elles, comme illustré dans la Figure~\ref{fig:ExShift}. Les colonnes non-nulles sont alors aussi égales entre elles, et les deux facteurs de la multiplication sont alors lisibles, en base~$2$, sur les lignes non-nulles pour l'un, et de bas en haut sur les colonnes non-nulles pour l'autre. Si on pose leur multiplication, toujours en base~$2$, on retrouve en effet la matrice de départ décalée d'un cran par ligne vers la gauche (cf. Figure~\ref{fig:ExShift}).
 
 
 
@@ -187,7 +104,7 @@ $\Rightarrow$
 
 Formellement, on pose $\La=\cg 1, n-1 \cd \times \cg 1, \lceil\frac{n}{2}\rceil\cd$ l'ensemble des cases de la matrice, et $\E=\{0,1\}^\La$ l'ensemble des configurations. Pour tout $x \in \E$, $(i,j)\in\La$, on note $x_{i,j}$ le coefficient $(i,j)$ de la matrice~$x$. 
 
-On se donne également un ensemble $\Gamma \subset \E^{\E\times\La}$ de transformations locales qui préservent l'invariant de somme. Elles sont représentées sur la figure~\ref{fig:rules}, et s'appliquent aux coefficients indiqués en gras sous certaines conditions. Les règles \textbf{R5} et \textbf{R6} ne sont en fait pas nécessaires pour l'accessibilité des solutions : on les introduit par symétrie, pour ne pas privilégier de direction de déplacements des~$1$. 
+On se donne également un ensemble $\Gamma \subset \E^{\E\times\La}$ de transformations locales qui préservent l'invariant de somme. Elles sont représentées sur la Figure~\ref{fig:rules}, et s'appliquent aux coefficients indiqués en gras sous certaines conditions. Les règles \textbf{R5} et \textbf{R6} ne sont en fait pas nécessaires pour l'accessibilité des solutions : on les introduit par symétrie, pour ne pas privilégier de direction de déplacements des~$1$. 
 
 %On se donne donc un ensemble $\Gamma$ de six transformations locales qui conservent $\sigma$. Elles sont représentées sur la figure~$3$. Plus 
 
@@ -334,7 +251,8 @@ On se donne également un ensemble $\Gamma \subset \E^{\E\times\La}$ de transfor
 %\caption{Illustration.}
 \end{minipage}}
 
-\caption{Transformations locales préservant l'invariant de somme.}
+\caption{Transformations locales préservant l'invariant de somme sur un exemple
+  de 3 lignes et 4 colonnes.}
 
 \label{fig:rules}
 
@@ -344,7 +262,6 @@ On se donne également un ensemble $\Gamma \subset \E^{\E\times\La}$ de transfor
 %À chaque pas de temps, on choisit au hasard une case et une transformation de $\Gamma$, et on décide si on applique ou non la transformation.
 
 
-Une formulation équivalente de l'égalité des lignes non-nulles est qu'un coefficient situé sur la même ligne qu'un 1 et sur la même colonne qu'un 1 vaut nécessairement 1 dans une matrice qui représente une multiplication. On va donc appliquer aléatoirement des règles conservant $\sigma$, en privilégiant les mouvements qui retirent les zéros de telles cases. Dans la suite, on dira qu'une case est \emph{sûre} s'il n'y a pas de~$1$ sur la même ligne ou s'il n'y en a pas sur la même colonne, et \emph{dangereuse} s'il y a à la fois un~$1$ sur la même ligne et un sur la même colonne.
 
 \begin{floatingfigure}[r]{0.5\textwidth}
 \centering
@@ -357,10 +274,12 @@ Une formulation équivalente de l'égalité des lignes non-nulles est qu'un coef
 \end{tabular}
 
 
-\caption{Exemple de situation bloquée si on interdit les mouvements ne déplaçant pas les zéros menacés (encadrés) : aucune des règles de la Figure~$3$ ne s'applique à eux.}
+\caption{Exemple de situation bloquée si on interdit les mouvements ne déplaçant pas les zéros menacés (encadrés) : aucune des règles de la Figure~\ref{fig:rules} ne s'applique à eux.}
 \label{fig:stuck}
 \end{floatingfigure}
-Pour diriger les zéros vers les cases sûres, on voudrait n'effectuer que des mouvements qui sortent un zéro d'une case dangereuse, mais cette restriction est trop forte : il existe alors des situations bloquées, la figure~\ref{fig:stuck} en donne un exemple. Il est donc nécessaire d'autoriser au moins certains mouvements qui ne sont pas directement utiles en ce sens. Par ailleurs, on pourrait vouloir restreindre les mouvements des zéros vers des cases dangereuses, de la même façon que pour le problème des~$n$ reines. Cependant, il se forme alors des blocs stables de~$1$ : les zéros qui viennent remplacer un~$1$ du bord du bloc en sont rapidement éjectés (les seules cases sûres proches sont à l'extérieur du bloc). 
+Une formulation équivalente de l'égalité des lignes non-nulles est qu'un coefficient situé sur la même ligne qu'un 1 et sur la même colonne qu'un 1 vaut nécessairement 1 dans une matrice qui représente une multiplication. On va donc appliquer aléatoirement des règles conservant $\sigma$, en privilégiant les mouvements qui retirent les zéros de telles cases. Dans la suite, on dira qu'une case est \emph{sûre} s'il n'y a pas de~$1$ sur la même ligne ou s'il n'y en a pas sur la même colonne, et \emph{dangereuse} s'il y a à la fois un~$1$ sur la même ligne et un sur la même colonne.
+
+Pour diriger les zéros vers les cases sûres, on voudrait n'effectuer que des mouvements qui sortent un zéro d'une case dangereuse, mais cette restriction est trop forte : il existe alors des situations bloquées, la Figure~\ref{fig:stuck} en donne un exemple. Il est donc nécessaire d'autoriser au moins certains mouvements qui ne sont pas directement utiles en ce sens. Par ailleurs, on pourrait vouloir restreindre les mouvements des zéros vers des cases dangereuses, de la même façon que pour le problème des~$n$ reines. Cependant, il se forme alors des blocs stables de~$1$ : les zéros qui viennent remplacer un~$1$ du bord du bloc en sont rapidement éjectés (les seules cases sûres proches sont à l'extérieur du bloc). 
 
 On prend donc le parti de ne pas restreindre les mouvements des zéros vers des cases dangereuses, et on se donne une probabilité d'agitation~$p$ : un mouvement valide mais qui ne sort pas un zéro d'une case dangereuse est effectué avec une probabilité~$p$, alors qu'un mouvement valide qui sort un zéro d'une case dangereuse est toujours effectué. Dans tous les cas, on ne s'intéresse pas au caractère sûr ou dangereux de la case de destination. 
 
@@ -440,11 +359,15 @@ Remarquons que $\sim$ est une relation d'équivalence (la symétrie vient du fai
 \label{fig:diags}
 %\end{figure}
 \end{floatingfigure}
-Pour toute matrice~$M$, on numérote ses diagonales descendantes en commençant à~$0$ par celle réduite au coin supérieur droit (cf Fig.~\ref{fig:diags}), et on note $b_i$ le nombre de coefficients égaux à~$1$ sur la diagonale~$i$, de sorte que \linebreak \mbox{$\sigma (M) = \sum\limits_ib_i2^i$}. On constate que deux matrices ayant les mêmes coefficients $b_i$ pour tout~$i$ sont équivalentes pour $\sim$ (en fait, on peut passer de l'une à l'autre en utilisant uniquement les règles \textbf{R1} et \textbf{R2}). On note de plus~$r$ le nombre de diagonales descendantes de la matrice (si la matrice est de taille $n\times p$, alors $r = n+p+1$). Enfin, pour tout $0\leq i < r$, on note $t_i$ la taille de la~$i$-ème diagonale : on a $0\leq b_i \leq t_i$. 
+Pour toute matrice~$M$, on numérote ses diagonales descendantes en commençant
+à~$0$ par celle réduite au coin supérieur droit (cf Fig.~\ref{fig:diags}), et on
+note $b_i$ le nombre de coefficients égaux à~$1$ sur la diagonale~$i$, de sorte
+que \linebreak \mbox{$\sigma (M) = \sum\limits_ib_i2^i$}. On constate que deux
+matrices ayant les mêmes coefficients $b_i$ pour \linebreak tout~$i$ sont équivalentes pour $\sim$ (en fait, on peut passer de l'une à l'autre en utilisant uniquement les règles \textbf{R1} et \textbf{R2}). On note de plus~$r$ le nombre de diagonales descendantes de la matrice (si la matrice est de taille $n\times p$, alors $r = n+p+1$). Enfin, pour tout $0\leq i < r$, on note $t_i$ la taille de la~$i$-ème diagonale : on a $0\leq b_i \leq t_i$. 
  
 On va montrer que pour tout~$N$, toute matrice de somme~$N$ est équivalente pour $\sim$ à une certaine matrice qui contient un nombre minimal de~$1$.
 
-Soit donc $N \in \N$,~$m$ le nombre minimal de~$1$ que doit contenir une matrice~$M$ de somme~$N$. Soit~$M$ une telle matrice. Elle vérifie nécessairement, pour tout $i<r-1$, $b_i \leq 1$ ou $b_{i+1}=t_{i+1}$ : sinon, on pourrait appliquer les règles \textbf{R1} et \textbf{R2} dans les diagonales~$i$ et $i+1$, puis une fois la règle \textbf{R4} et se ramener à une matrice avec strictement moins de~$1$.
+Soit donc $N \in \N$,~$m$ le nombre minimal de~$1$ que doit contenir une matrice~$M$ de somme~$N$. Soit~$M$ une telle matrice. Elle vérifie néces\-saire\-ment, pour tout $i<r-1$, $b_i \leq 1$ ou $b_{i+1}=t_{i+1}$ : sinon, on pourrait appliquer les règles \textbf{R1} et \textbf{R2} dans les diagonales~$i$ et $i+1$, puis une fois la règle \textbf{R4} et se ramener à une matrice avec strictement moins de~$1$.
 Par conséquent, si $b_i > 1$, on a par récurrence que pour tout $j>i$, $b_j = t_j$.
 On suppose que tous les coefficients de~$M$ ne sont pas égaux à~$1$ (sinon,~$M$ telle que $\sigma = N$ et on a fini).
 Il existe alors $k \in \cg 0, r-1 \cd$ tel que $b_k<t_k$, pour tout  $i<k$, $b_i \leq 1$ et pour tout $i>k$, $b_i=t_i$ ($k$ est le plus grand~$i$ tel que $b_i < t_i$).
@@ -530,37 +453,28 @@ Le fait que les~$1$ isolés ne soient pas encouragés à se déplacer est d'auta
 \subsection{Fixer la taille des diviseurs recherchés}
 
 On peut donc envisager l'amélioration suivante : plutôt que d'utiliser une grande matrice, on suppose connue la taille des diviseurs. Si~$n$ est la taille du nombre à factoriser, il y a au plus $4n-2$ tailles de matrices possibles à essayer car la somme des tailles des diviseurs vaut nécessairement~$n$ ou $n+1$ et on ignore les matrices dont une dimension vaut~$1$ car on cherche des diviseurs non-triviaux. On lance donc en parallèle l'algorithme sur les $4n-2$ matrices différentes, et on arrête l'exécution dès qu'une solution est trouvée pour l'une des tailles. Quitte à supposer impair le nombre à factoriser, on impose de plus qu'il y ait un~$1$ à chacun des quatre coins (c'est une condition nécessaire pour qu'une matrice dont les dimensions sont exactement les tailles de deux facteurs soit solution : chaque facteur commence par un~$1$ car les zéros à gauche ne sont pas significatifs, et finissent par un~$1$ car les diviseurs d'un nombre impair sont impairs). 
+
+\begin{floatingtable}[r]{
+    \begin{tabular}{r|c|c}
+                                & algo    & avec         \\
+                              N & initial & amélioration \\
+      \hline
+      \rule{0pt}{3ex}   221     & 1\e{6}  & 8\e{4}       \\
+      403                       & 8\e{4}  & 1\e{4}       \\
+      493                       & 5\e{5}  & 1\e{5}       \\
+      635                       & $>10^9$ & 3\e{5}       \\
+      893                       & 3\e{6}  & 2\e{5}       \\
+      899                       & 1\e{6}  & 8\e{3}       \\
+      901                       & 2\e{7}  & 3\e{6}       \\
+      923                       & $>10^9$ & 3\e{5}
+    \end{tabular}
+  }
+  \caption{Temps moyen mis pour atteindre une solution (en nombre d'étapes).}
+  \label{fig:fixedlengths}
+\end{floatingtable}
 Il apparaît que l'exécution de l'algorithme est significativement plus rapide qu'avec la grande matrice. Les nombres dont l'un des facteurs est très petit deviennent très faciles à traiter, car la matrice de la bonne taille est très petite, et le calcul y aboutit donc rapidement. Les nombres les plus difficiles à traiter deviennent, comme pour les algorithmes classiques de factorisation, les produits de deux nombres premiers de même taille : en effet, la seule matrice pour laquelle l'algorithme peut aboutir est alors de taille maximale. Même dans ce cas, l'exécution est plus rapide car on ne perd plus de temps à cause des~$1$ situés dans une zone inutile de la matrice. %On gagne ainsi un facteur $100$ sur le temps de factorisation de $329$ ($ =7\times 47$), largement de quoi justifier le lancement simultané d'une quinzaine d'exécutions. % TODO : stats plus détaillées ici ?
-
-\begin{floatingfigure}[r]{0.5\textwidth}
-\centering
-\[
-\begin{array}{r|l|l}
-N&\text{algo initial}&\text{avec amélioration}\\
-\hline
-\rule{0pt}{3ex}   221&1\e{6}&8\e{4}\\
-403&8\e{4}&1\e{4}\\
-493&5\e{5}&1\e{5}\\
-635& >10^9&3\e{5}\\
-893&3\e{6}&2\e{5}\\
-899&1\e{6}&8\e{3}\\
-901&2\e{7}&3\e{6}\\
-923& >10^9&3\e{5}
-\end{array}
-\]
-\caption{Temps moyen mis pour atteindre une solution (en nombre d'étapes).}
-\label{fig:fixedlengths}
-\end{floatingfigure}
-On a représenté sur la figure~\ref{fig:fixedlengths} les temps moyens mis pour atteindre une solution pour certaines valeurs de $N$ par l'algorithme initial et par l'algorithme dans lequel on suppose connue la taille des diviseurs, lancé avec la combinaison de tailles la plus favorable en moyenne. On tient compte de l'ordre des tailles : en effet, échanger les dimensions de la matrice revient à transposer la matrice solution, mais ce n'est pas le cas de la configuration initiale. Ainsi, il peut y avoir une différence de performance significative : trouver les diviseurs de $901$ ($=17 \times 53$) est en moyenne cinq fois plus rapide sur une matrice de taille $6\times 5$ que sur une matrice de taille $5 \times 6$.
+On a représenté sur la Table~\ref{fig:fixedlengths} les temps moyens mis pour atteindre une solution pour certaines valeurs de $N$ par l'algorithme initial et par l'algorithme dans lequel on suppose connue la taille des diviseurs, lancé avec la combinaison de tailles la plus favorable en moyenne. On tient compte de l'ordre des tailles : en effet, échanger les dimensions de la matrice revient à transposer la matrice solution, mais ce n'est pas le cas de la configuration initiale. Ainsi, il peut y avoir une différence de performance significative : trouver les diviseurs de $901$ ($=17 \times 53$) est en moyenne cinq fois plus rapide sur une matrice de taille $6\times 5$ que sur une matrice de taille $5 \times 6$.
 On constate que la différence de performance avec l'algorithme initial semble s'accentuer quand $N$ croît : cette amélioration semble permettre à l'algorithme de passer beaucoup mieux à l'échelle.
-
-\subsection{Permettre des échanges à plus longue distance}
-
-Les transformations préservant l'invariant de somme introduites plus haut sont très localisées : on peut envisager de remplacer les règles \textbf{R1} et \textbf{R2} par une règle plus générale, qui consiste à intervertir deux cellules situées sur la même diagonale descendante. De même, on peut remplacer les règles \textbf{R3} et \textbf{R5} par une règle qui consiste à échanger un~$1$ d'une diagonale contre deux sur la diagonale à sa droite, et les règles \textbf{R4} et \textbf{R6} par une règle qui consiste à échanger un~$0$ d'une diagonale contre deux sur la diagonale à sa droite. Les transformations du système sont ainsi plus équitables au sens où on peut maintenant atteindre, en appliquant une seule règle, des positions qu'on ne pouvait précédemment atteindre que par une séquence précise de transformations locales. 
-
-Il semble cependant que ce changement n'améliore pas significativement le temps mis pour atteindre une solution : pour certains entiers à factoriser, on constate une amélioration de l'ordre de $10\%$, mais pour d'autres, le temps de convergence subit au contraire une augmentation du même ordre.   
-
-%TODO : comparatif entre fact_fixed_lengths et fact_global
 
 \subsection{N'utiliser que des informations locales}
 
@@ -571,16 +485,33 @@ On procède de la façon suivante : les cellules de la matrice, en plus de conte
 À chaque pas de temps, on choisit une cellule~$c$ à mettre à jour et on commence par mettre à jour ses signaux de la même façon que pour le problème des~$n$ reines : pour chaque direction~$d$, si $c'$ est la cellule voisine de~$c$ dans la direction~$d$, le signal en~$c$ en provenance de la direction~$d$ devient présent si $c'$ contient un~$1$, et prend le même état (présent ou absent) que celui de $c'$ en direction de~$d$ sinon.
 Après avoir mis les signaux de~$c$ à jour, on applique l'algorithme précédent pour décider si on applique une transformation de $\Gamma$, en utilisant la nouvelle définition de case sûre/dangereuse. 
 
-Comme on pouvait s'y attendre, on constate une déterioration des performances lorsqu'on se restreint ainsi à des informations locales. Cependant, cette augmentation du temps mis à atteindre une solution reste raisonnable, ce qui est prometteur dans le sens où se restreindre à des informations locales peut permettre de paralléliser le système en effectuant plusieurs mises à jour simultanées, sans conflits à condition que les zones affectées par les différentes mises à jour soient disjointes. Ceci était moins efficace avec l'algorithme initial du fait de la nécessité de garder une trace du nombre total de~$1$ sur chaque ligne et diagonale, ce qui impose de centraliser les mises à jour sous peine d'en effectuer certaines avec des informations erronées.
+Comme on pouvait s'y attendre, on constate une légère déterioration des performances lorsqu'on se restreint ainsi à des informations locales : chaque pas de calcul est plus long à réaliser (on doit à la fois appliquer des transformations et mettre à jour des signaux), mais on en fait généralement un peu moins. Dans l'ensemble, le temps de calcul est typiquement doublé. Cette déterioration est néanmoins assez raisonnable, ce qui est prometteur dans le sens où se restreindre à des informations locales peut permettre de paralléliser le système en effectuant plusieurs mises à jour simultanées, sans conflits à condition que les zones affectées par les différentes mises à jour soient disjointes. Ceci était moins efficace avec l'algorithme initial du fait de la nécessité de garder une trace du nombre total de~$1$ sur chaque ligne et diagonale, ce qui impose de centraliser les mises à jour sous peine d'en effectuer certaines avec des informations erronées.
 
 %TODO : comparatif entre fact_fixed_lengths et fact_sigs
 
-\nocite{Pom96}
-\nocite{BahiC06}
-\nocite{Fat13}
+\subsection{Permettre des échanges à plus longue distance}
 
-\bibliographystyle{plain}
-\bibliography{bibfact}
+Les transformations préservant l'invariant de somme introduites plus haut sont très localisées : on peut envisager de remplacer les règles \textbf{R1} et \textbf{R2} par une règle plus générale, qui consiste à intervertir deux cellules situées sur la même diagonale descendante. De même, on peut remplacer les règles \textbf{R3} et \textbf{R5} par une règle qui consiste à échanger un~$1$ d'une diagonale contre deux sur la diagonale à sa droite, et les règles \textbf{R4} et \textbf{R6} par une règle qui consiste à échanger un~$0$ d'une diagonale contre deux sur la diagonale à sa droite. Les transformations du système sont ainsi plus équitables au sens où on peut maintenant atteindre, en appliquant une seule règle, des positions qu'on ne pouvait précédemment atteindre que par une séquence précise de transformations locales. 
 
-\end{document}
+L'effet de ce changement sur les performances est mitigé : dans la plupart des cas, on constate une amélioration de l'ordre de $40\%$, mais dans certains cas, le temps de calcul est au contraire beaucoup plus grand (ainsi, il est dix fois plus long pour $N=901$). Par ailleurs, il devient bien plus difficile de paralléliser les calculs comme on l'a envisagé dans la section précédente : utiliser un automate cellulaire perd de son intérêt.
 
+%distance à la situation initiale ? 
+
+%TODO : comparatif entre fact_fixed_lengths et fact_global
+
+\section*{Bilan sur le problème de la factorisation}
+
+%assez peu de puissance de calcul : pas pu tester sur de plus grands nombres... améliorations passent-elles à l'échelle ?
+
+
+
+...
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% fill-column: 80
+%%% ispell-dictionary: "francais"
+%%% mode: flyspell
+%%% TeX-master: "rapportStage"
+%%% End:

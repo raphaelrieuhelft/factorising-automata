@@ -1,0 +1,26 @@
+\begin{thebibliography}{1}
+
+\bibitem{BahiC06}
+Jacques~M. Bahi and Sylvain Contassot-Vivier.
+\newblock {Basins of attraction in fully asynchronous discrete-time
+  discrete-state dynamic networks.}
+\newblock {\em IEEE Transactions on Neural Networks}, 17(2):397--408, 2006.
+
+\bibitem{ChevFat08}
+Vincent Chevrier and Nazim Fat{\`e}s.
+\newblock {Multi-agent Systems as Discrete Dynamical Systems: Influences and
+  Reactions as a Modelling Principle}.
+\newblock Rapport de recherche, 2008.
+
+\bibitem{Fat13}
+Nazim Fat{\`e}s.
+\newblock {Stochastic Cellular Automata Solutions to the Density Classification
+  Problem - When Randomness Helps Computing.}
+\newblock {\em Theory Comput. Syst.}, 53(2):223--242, 2013.
+
+\bibitem{Pom96}
+Carl Pomerance.
+\newblock {A tale of two sieves}.
+\newblock {\em Notices Amer. Math. Soc}, 43:1473--1485, 1996.
+
+\end{thebibliography}

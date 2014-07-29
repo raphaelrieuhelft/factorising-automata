@@ -5,7 +5,7 @@ open Unix
 
 let n = ref 7 
 let p_cheat = ref 1.
-let p_ag = ref 0.05
+let p_ag = ref 0.01
 
 let nrows = ref 3
 let ncols = ref 4
@@ -15,7 +15,7 @@ let moves = ref 0
 
 let sigs_only = ref false
 
-let samplesize = ref 50
+let samplesize = ref 30
 let ff = ref Format.std_formatter
 let timeout = ref 100000000
 exception Conflict
@@ -124,7 +124,7 @@ let rand_next_diag i j =
   with _-> (
     Format.printf "failed next_diag with i=%d, j=%d@." i j; failwith "fail2")
       
-
+(*
 
 let shift i j ((t,sigs) as b) =
   let (i1,j1) = rand_diag i j in
@@ -153,8 +153,8 @@ let split i j ((t,sigs) as b) =
     &&((safego i1 j1 b (i,j) && safego i2 j2 b (i,j))||try_cheat ())
   then (add i j b; rm i1 j1 b; rm i2 j2 b; incr moves; true)
   else false
+*)
 
-(*
 let shift_down i j ((t, sigs) as b) = 
   
   if (i<(!nrows-1))&&(j<(!ncols -1))&&(not ((corner i j)||(corner
@@ -215,7 +215,7 @@ let sum_up i j ((t, sigs) as b) =
       ((not (safestay i j b)) || try_ag ())
   then (rm i j b; add i (j+1) b; add (i+1) (j+2) b; incr moves; true)
   else false
-*)
+
 
   
 
@@ -231,11 +231,17 @@ let update ((t, sigs) as b)  =
   Cset.iter (update_sig (i,j)) s;
  (* if !sigs_only then false else*)
   if corner i j then false else
-    match Random.int 3 with
+   (* match Random.int 3 with
     |0 -> shift i j b
     |1 -> split i j b
-    |_ -> sum i j b
- 
+    |_ -> sum i j b*)
+ match Random.int 6 with
+  |0 -> shift_down i j b
+  |1 -> shift_up i j b
+  |2 -> split_up i j b
+  |3 -> split_down i j b
+  |4 -> sum_up i j b
+  |_ -> sum_down i j b
   (*if aux () then (ag_count:=0; true) else false*)
 
 let print_spaces k =
@@ -408,7 +414,7 @@ let find_factors target rows cols  =
   let (t, sigs) = init target rows cols in
   let fini = ref false in
   if (check_fini t)
-  then (fini := true;  print_board t);
+  then (fini := true(*;  print_board t*));
   while (not !fini) do
    (* if (!time mod 1000000 = 0) then (Unix.sleep 1; print_board t;
 				     print_safe (t,sigs));*)
@@ -483,5 +489,15 @@ let _ = Arg.parse options (fun _ -> ()) "";
   Scanf.scanf  "%d %d %d" (fun n r c -> print_facts n (find_factors n r c))
 *)
 
+
+let avg n r c = 
+  let tot = ref 0 in
+  for i = 1 to !samplesize do 
+    let _ = find_factors n r c in
+    tot := !tot + !time
+  done;
+  Format.printf "Temps moyen = %d pour n = %d, p_ag = %f@." (!tot /
+  !samplesize) n !p_ag
+
 let _ = Arg.parse options (fun _ -> ()) "";
-  Scanf.scanf "%d %d %d" stats
+  Scanf.scanf "%d %d %d" avg

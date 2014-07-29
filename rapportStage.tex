@@ -1,0 +1,129 @@
+\documentclass[11pt, openany, a4paper]{article}
+\usepackage{etex}
+\usepackage{fullpage}
+\usepackage{pstricks,pstricks-add,pst-math,pst-xkey}
+\usepackage[frenchb]{babel}
+%\usepackage{slashbox}
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb,amstext,amsthm}
+\usepackage{mathtools}
+%\usepackage{comment}
+\usepackage[utf8]{inputenc}
+\usepackage[OT1]{fontenc}
+\usepackage{pgf,tikz}
+\usepackage{pgfplots}
+\usepackage{floatpag}
+\usepgfmodule{shapes}
+\usetikzlibrary{arrows,patterns}
+\usepackage[ps]{skak}
+\usepackage{chessboard}
+\usepackage{floatflt}
+\usepackage{import}
+\newcounter{moncompteur}
+\newtheorem{q}[moncompteur]{ \textbf{Question}}{}
+\newtheorem{prop}[moncompteur]{ \textbf{Proposition}}{}
+\newtheorem{df}[moncompteur]{ \textbf{Définition}}{}
+\newtheorem*{df*}{ \textbf{Définition}}{}
+\newtheorem{rem}[moncompteur]{ \textbf{Remarque}}{}
+\newtheorem{theo}[moncompteur]{ \textbf{Théorème}}{}
+\newtheorem{conj}[moncompteur]{ \textbf{Conjecture}}{}
+\newtheorem{cor}[moncompteur]{ \textbf{Corollaire}}{}
+\newtheorem{lm}[moncompteur]{ \textbf{Lemme}}{}
+%\newtheorem{nota}[moncompteur]{ \textbf{Notation}}{}
+%\newtheorem{conv}[moncompteur]{ \textbf{Convention}}{}
+\newtheorem{exa}[moncompteur]{ \textbf{Exemple}}{}
+\newtheorem{ex}[moncompteur]{ \textbf{Exercice}}{}
+%\newtheorem{app}[moncompteur]{ \textbf{Application}}{}
+%\newtheorem{prog}[moncompteur]{ \textbf{Algorithme}}{}
+%\newtheorem{hyp}[moncompteur]{ \textbf{Hypothèse}}{}
+\newenvironment{dem}{\noindent\textbf{Preuve}\\}{\flushright$\blacksquare$\\}
+\newcommand{\cg }{[\kern-0.15em [}
+\newcommand{\cd}{]\kern-0.15em]}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\K}{\mathbb{K}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\U}{\mathbb{U}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\B}{\mathbb{B}}
+\newcommand{\card}{\mathrm{card}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\pgfplotsset{compat=newest}
+\newcommand{\La}{\mathcal{L}}
+\newcommand{\Ne}{\mathcal{N}}
+\newcommand{\D}{\mathcal{D}}
+\newcommand{\Ss}{\textsc{safestay}}
+\newcommand{\Sg}{\textsc{safego}}
+\newcommand{\M}{\textsc{move}}
+\newcommand{\E}{\mathcal{E}}
+\newcommand{\V}{\mathcal V}
+\setlength{\parindent}{0pt}
+\newcommand{\myrightleftarrows}[1]{\mathrel{\substack{\xrightarrow{#1} \\[-.6ex] \xleftarrow{#1}}}}
+\newcommand{\longrightleftarrows}{\myrightleftarrows{\rule{1cm}{0cm}}}
+
+\newcommand\tikzmark[1]{%
+  \tikz[overlay,remember picture,baseline] 
+  \node[anchor=base](#1){};}
+
+\newcommand\MyLine[3][]{%
+  \begin{tikzpicture}[overlay,remember picture]
+    \draw[#1] (#2.north west) -- (#3.south east);
+  \end{tikzpicture}}
+
+
+\graphicspath{{.}}
+\newcommand{\e}[1]{$\times 10^{#1}$}
+
+\begin{document}
+\floatpagestyle{plain}
+\renewcommand{\labelitemi}{$\bullet$}
+
+\title{\vspace{-3em}Multiplication binaire et factorisation}
+\date{Juin-Juillet 2014}
+\author{Raphaël Rieu-Helft}
+
+\maketitle
+
+\part*{Introduction}
+
+Ce stage...
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% N-REINES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\part{Le problème des $n$ reines}
+\label{part:nreines}
+
+\input{nreines}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FACTORISATION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\part{Problème de la factorisation}
+\label{part:facto}
+
+\input{factorisation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% CONCLUSION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\part*{Conclusion}
+
+...
+
+
+\bibliographystyle{plain}
+\bibliography{biblio}
+
+\end{document}
+
+%%% Local Variables:
+%%% mode: latex
+%%% fill-column: 80
+%%% ispell-dictionary: "francais"
+%%% mode: flyspell
+%%% TeX-master: t
+%%% End:
