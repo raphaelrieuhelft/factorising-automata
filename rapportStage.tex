@@ -1,4 +1,5 @@
 \documentclass[11pt, openany, a4paper]{article}
+
 \usepackage{etex}
 \usepackage{fullpage}
 \usepackage{pstricks,pstricks-add,pst-math,pst-xkey}
@@ -19,6 +20,9 @@
 \usepackage{chessboard}
 \usepackage{floatflt}
 \usepackage{import}
+\usepackage{xcolor}
+%\usepackage{fourier-orns}
+
 \newcounter{moncompteur}
 \newtheorem{q}[moncompteur]{ \textbf{Question}}{}
 \newtheorem{prop}[moncompteur]{ \textbf{Proposition}}{}
@@ -62,6 +66,20 @@
 \newcommand{\myrightleftarrows}[1]{\mathrel{\substack{\xrightarrow{#1} \\[-.6ex] \xleftarrow{#1}}}}
 \newcommand{\longrightleftarrows}{\myrightleftarrows{\rule{1cm}{0cm}}}
 
+\definecolor{bleuclair}{rgb}{0.75,0.75,1.0}
+\newcommand{\ANNOT}[1]{
+  ~\linebreak
+  \centerline{
+    %{\Huge{\danger}}
+    \large\fcolorbox{black}{bleuclair}{
+      \begin{minipage}[h]{.8\linewidth}
+      #1
+      \end{minipage}
+    }
+    %{\Huge{\danger}}
+  }
+}
+
 \newcommand\tikzmark[1]{%
   \tikz[overlay,remember picture,baseline] 
   \node[anchor=base](#1){};}
@@ -80,27 +98,41 @@
 \renewcommand{\labelitemi}{$\bullet$}
 
 \title{\vspace{-3em}Multiplication binaire et factorisation}
-\date{Juin-Juillet 2014}
-\author{Raphaël Rieu-Helft}
+\date{}
+%\date{Juin-Juillet 2014}
+%\author{Raphaël Rieu-Helft}
+
+
 
 \maketitle
 
+% \ANNOT{Traitements à faire globalement :
+%   \begin{itemize}
+%   \item reformuler les paragraphes dont la dernière ligne est courte
+%   \item vérifier les placements des figures et tables en allant du début vers la
+%     fin du document (ne pas hésiter à déplacer les figures dans le source LaTex)
+%   \end{itemize}
+% 
+
 \part*{Introduction}
 
-Ce stage...
+J'ai effectué mon stage dans les équipes \textsc{Algorille} et \textsc{Maia} au \textsc{Loria} (Nancy). Il consistait en l'élaboration de systèmes dynamiques discrets répondant à deux problèmes algorithmiques : le problème des $n$ reines et la factorisation d'entiers. L'objectif était d'obtenir des systèmes relativement simples, tels que des automates cellulaires ou des systèmes multi-agents \cite{ChevFat08}, qui convergent vers une solution du problème considéré \cite{BahiC06}. Plus précisément, mon travail a été de concevoir de tels systèmes, puis de programmer un simulateur afin de les tester et d'envisager des améliorations.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% N-REINES
+% N-REINES 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\part{Le problème des $n$ reines}
+\part*{Le problème des $n$ reines}
 \label{part:nreines}
 
 \input{nreines}
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % FACTORISATION
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\part{Problème de la factorisation}
+\setcounter{section}{0}
+\part*{Multiplication binaire et factorisation}
 \label{part:facto}
 
 \input{factorisation}
@@ -114,6 +146,12 @@ Ce stage...
 
 ...
 
+\ANNOT{\begin{itemize}
+\item Résumé du travail effectué
+\item Résultats encourageants sur la faisabilité du concept
+\item Perspectives...
+\end{itemize}
+}
 
 \bibliographystyle{plain}
 \bibliography{biblio}

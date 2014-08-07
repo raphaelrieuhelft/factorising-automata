@@ -416,14 +416,14 @@ let find_factors target rows cols  =
   if (check_fini t)
   then (fini := true(*;  print_board t*));
   while (not !fini) do
-   (* if (!time mod 1000000 = 0) then (Unix.sleep 1; print_board t;
-				     print_safe (t,sigs));*)
+    if (!time mod 1000000 = 0) then (Unix.sleep 1; print_board t(*;
+				     print_safe (t,sigs) *));
     (*if !time > !timeout then fini := true;*)
     incr time;
     if (update (t, sigs))
 	then ((*print_board t; Unix.sleep 3;*)
 	  if (check_fini t)
-	  then (fini := true; (*sigs_only:=true ;*) (*print_board t;
+	  then (fini := true; (*sigs_only:=true ;*) print_board t(*;
 						      print_safe
 						      (t,sigs) *))
 	)
@@ -500,4 +500,4 @@ let avg n r c =
   !samplesize) n !p_ag
 
 let _ = Arg.parse options (fun _ -> ()) "";
-  Scanf.scanf "%d %d %d" avg
+  Scanf.scanf "%d %d %d" find_factors
