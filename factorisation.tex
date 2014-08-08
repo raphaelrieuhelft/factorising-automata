@@ -2,8 +2,8 @@
 \section{Position du problème}
 \label{sec:introfacto}
 
-\ANNOT{...\cite{Pom96} \cite{BahiC06} \cite{Fat13}... citations liées à la factorisation ...
-}
+% \ANNOT{...\cite{Pom96} \cite{BahiC06} \cite{Fat13}... citations liées à la factorisation ...
+% }
 
 
 On cherche un système dynamique discret qui, étant donné un entier non-premier, trouve un de ses diviseurs non-triviaux. On se base sur la multiplication binaire. En effet, on observe qu'une matrice à coefficients dans $\{0,1\}$ peut s'interpréter comme une multiplication binaire si ses lignes non-nulles sont égales entre elles, comme illustré dans la Figure~\ref{fig:ExShift}. Les colonnes non-nulles sont alors aussi égales entre elles, et les deux facteurs de la multiplication sont alors lisibles, en base~$2$, sur les lignes non-nulles pour l'un, et de bas en haut sur les colonnes non-nulles pour l'autre. Si on pose leur multiplication, toujours en base~$2$, on retrouve en effet la matrice de départ décalée d'un cran par ligne vers la gauche (cf. Figure~\ref{fig:ExShift}).
@@ -438,7 +438,8 @@ Toutes les matrices de même somme sont donc équivalentes pour $\sim$, donc on 
 
 \section{Performances et observations}
 
-\ANNOT{Ajouter un bref contexte expérimental (type ordi, OS, langage développement)}
+%\ANNOT{Ajouter un bref contexte expérimental (type ordi, OS, langage développement)}
+Comme pour le problème des $n$ reines, on a implémenté l'algorithme en Ocaml et effectué des expérimentations sur une machine personnelle.
 
 Les  performances   varient  grandement  selon   l'entier  à  factoriser   :  sa
 dé\-composition  en  facteurs premiers,  et  plus  généralement la  distribution
@@ -452,10 +453,10 @@ $10^6$ itérations en moyenne  un diviseur de  $493$ ($ = 17\times  29$), mais
 pour factoriser $362$ ($  = 2\times 181$), il lui faut $10^9$  étapes ! Ceci est
 dû au fait que la densité de~$1$  varie très peu au cours du temps (elle oscille
 autour d'une densité moyenne, et les solutions pour lesquelles la densité finale
-en est éloignée sont difficiles à trouver).
+en est éloignée sont difficiles à trouver). Les nombres difficiles à factoriser sont donc différents des nombres qui posent problèmes aux algorithmes classiques \cite{Pom96}.
 
 De plus, les conditions que l'on s'est donné pour appliquer les règles tendent à chasser les zéros menacés, mais rien ne pousse particulièrement les~$1$ isolés à se déplacer. Il est donc relativement difficile de trouver les positions pour lesquelles les~$1$ sont tous à un endroit précis de la matrice : ainsi, pour les nombres de la forme $2^kp$ avec~$p$ premier, la matrice aura tous ses~$1$ sur la même ligne (la~$k$-ième) ou bien sur la même diagonale. Ainsi, dans les cas ``faciles'' tels que $493$, une solution est atteinte environ $40$ fois plus vite avec $p=0.05$ qu'avec $p=1$ (cas où le système applique des règles valides sans tenir compte du caractère dangereux ou sûr des cases), mais dans les cas difficiles tels que $362$, les performances sont plutôt meilleures avec la marche aléatoire $p=1$. Plus généralement, l'évolution du système n'est dirigée que faiblement, notamment parce qu'on a décidé de ne pas restreindre les déplacements de zéros vers des cases dangereuses et parce que le système n'a pas de mémoire.
- 
+
 Le fait que les~$1$ isolés ne soient pas encouragés à se déplacer est d'autant plus gênant qu'on a choisi une taille de matrice nécessairement trop grande pour les facteurs que l'on va trouver. En effet, on a pris une matrice de taille $n-1 \times \lceil \frac{n}{2} \rceil$ pour un nombre de taille~$n$ afin d'assurer de pouvoir trouver n'importe quel diviseur non trivial, mais la somme des longueurs des deux facteurs que l'on va trouver est au plus~$n+1$. Par conséquent, tous les~$1$ d'une matrice solution sont contenus dans un rectangle dont l'un des sommets est le coin supérieur droit et dont le périmètre est limité : s'il y a un~$1$ dans le coin inférieur droit, il ne peut y en avoir aucun dans toute la moitié gauche de la matrice ! Si, dans une exécution de l'algorithme, aucun~$1$ n'apparaît typiquement dans le quart inférieur gauche pour~$p$ assez petit, il y en a fréquemment à la fois dans le coin supérieur gauche et inférieur droit, ce qui fait perdre beaucoup de temps. 
 
 
@@ -536,24 +537,6 @@ maximale. Même dans ce  cas, l'exécution est plus rapide car on  ne perd plus 
 temps à cause des~$1$ situés dans une zone inutile de la
 matrice. %On gagne ainsi un facteur $100$ sur le temps de factorisation de $329$ ($ =7\times 47$), largement de quoi justifier le lancement simultané d'une quinzaine d'exécutions. % TODO : stats plus détaillées ici ?
 
-\begin{floatingtable}[r]{
-    \begin{tabular}{r|c|c|c|c}
-                                & algo    & taille des       & et informations  & et déplacements \\
-                             $ N$ & initial & diviseurs connue & purement locales & globaux\\
-      \hline
-      \rule{0pt}{3ex}   221     & 1\e{6}  & 8\e{4}       &  6\e{4} & 4\e{4} \\
-      403                       & 8\e{4}  & 1\e{4}       & 8\e{3}&  6\e{3}\\ 
-      493                       & 5\e{5}  & 1\e{5}       &1\e{5}&  1\e{5}\\
-      635                       & $>10^9$ & 3\e{5}       &4\e{5}&  2\e{5}\\
-      893                       & 3\e{6}  & 2\e{5}      & 3\e{5}&  2\e{5}\\
-      899                       & 1\e{6}  & 8\e{3}      & 9\e{3}&  5\e{3}\\
-      901                       & 2\e{7}  & 3\e{6}      & 3\e{6}&  3\e{7}\\
-      923                       & $>10^9$ & 3\e{5}&2\e{5}&1\e{5}
-    \end{tabular}
-  }
-  \caption{Temps moyen mis pour atteindre une solution (en nombre d'étapes).}
-  \label{fig:fixedlengths}
-\end{floatingtable}
 On donne en Table~\ref{fig:fixedlengths} les temps moyens mis pour atteindre une
 solution  pour  certaines  valeurs  de  $N$  par  l'algorithme  initial  et  par
 l'algorithme dans lequel  on suppose connue la taille  des diviseurs, lancé avec
@@ -571,7 +554,7 @@ initial semble s'accentuer quand $N$ croît : cette amélioration semble permett
 
 Dans l'algorithme ci-dessus, on utilise des informations globales sur le système lorsqu'on décide si on applique une transformation : en effet, on décide si une case est sûre ou dangereuse en comptant les~$1$ sur la ligne et la diagonale concernées. On peut en fait ajuster l'algorithme pour se restreindre à utiliser uniquement des informations locales, en mettant en place un système de signaux analogue à celui utilisé pour le problème des~$n$ reines. 
 
-On procède de la façon suivante : les cellules de la matrice, en plus de contenir un~$0$ ou un~$1$, peuvent contenir des signaux en provenance des quatre directions~$N$,~$S$,~$E$ et~$W$. On souhaite qu'un signal en provenance d'une certaine direction soit présent sur une cellule s'il existe un coefficient égal à~$1$ dans cette direction. Ainsi, une case est dite \emph{sûre} si elle ne contient pas de signal en provenance du nord ni du sud, ou bien si elle ne contient pas de signal en provenance de l'ouest ni de l'est. Dans le cas contraire, elle est dite \emph{dangereuse}. On a ainsi traduit l'ancienne définition d'une cellule sûre (pas de~$1$ sur la même colonne, ou bien pas de~$1$ sur la même ligne) en terme de signaux.
+On procède de la façon suivante : les cellules de la matrice, en plus de contenir un~$0$ ou un~$1$, peuvent contenir des signaux en provenance des quatre directions~$N$,~$S$,~$E$ et~$W$. On souhaite qu'un signal en provenance d'une certaine direction soit présent sur une cellule si et seulement s'il existe un coefficient égal à~$1$ dans cette direction. Ainsi, une case est dite \emph{sûre} si elle ne contient pas de signal en provenance du nord ni du sud, ou bien si elle ne contient pas de signal en provenance de l'ouest ni de l'est. Dans le cas contraire, elle est dite \emph{dangereuse}. On a ainsi traduit l'ancienne définition d'une cellule sûre (pas de~$1$ sur la même colonne, ou bien pas de~$1$ sur la même ligne) en terme de signaux.
 
 À chaque pas de temps, on choisit une cellule~$c$ à mettre à jour et on commence par mettre à jour ses signaux comme pour le problème des~$n$ reines : pour chaque direction~$d$, si $c'$ est la cellule voisine de~$c$ dans la direction~$d$, le signal en~$c$ en provenance de la direction~$d$ devient présent si $c'$ contient un~$1$, et prend le même état (présent ou absent) que celui de $c'$ en direction de~$d$ sinon.
 Après avoir mis les signaux de~$c$ à jour, on applique l'algorithme précédent pour décider si on applique une transformation de $\Gamma$, en utilisant la nouvelle définition de case sûre/dangereuse. 
@@ -598,10 +581,27 @@ L'effet de ce  changement sur les performances est mitigé :  dans la plupart de
 cas, on constate une amélioration de  l'ordre de $40\%$, mais dans certains cas,
 le temps de calcul est au contraire  beaucoup plus grand (ainsi, il est dix fois
 plus  long  pour $N=901$).  Par  ailleurs, il  devient  bien  plus difficile  de
-paralléliser  les calculs comme  on l'a  envisagé dans  la section  précédente :
-utiliser un automate cellulaire perd de son intérêt.
+paralléliser  les calculs comme  on l'a  envisagé dans  la section  précédente.
 
-\ANNOT{Modifier la dernière phrase car au contraire, c'est l'extension des voisinages, plus éloignée des ACs, qui perd de son intérêt}
+\begin{table}[htb]
+  \centering
+  \begin{tabular}{r|c|c|c|c}
+    & algo    & taille des       & et informations  & et déplacements \\
+    $ N$ & initial & diviseurs connue & purement locales & globaux\\
+    \hline
+    \rule{0pt}{3ex}   221     & 1\e{6}  & 8\e{4}       &  6\e{4} & 4\e{4} \\
+    403                       & 8\e{4}  & 1\e{4}       & 8\e{3}&  6\e{3}\\ 
+    493                       & 5\e{5}  & 1\e{5}       &1\e{5}&  1\e{5}\\
+   635                       & $>10^9$ & 3\e{5}       &4\e{5}&  2\e{5}\\
+   893                       & 3\e{6}  & 2\e{5}      & 3\e{5}&  2\e{5}\\
+    899                       & 1\e{6}  & 8\e{3}      & 9\e{3}&  5\e{3}\\
+    901                       & 2\e{7}  & 3\e{6}      & 3\e{6}&  3\e{7}\\
+    923                       & $>10^9$ & 3\e{5}&2\e{5}&1\e{5}
+  \end{tabular}
+  \caption{Temps moyen mis pour atteindre une solution (en nombre d'étapes).}
+  \label{fig:fixedlengths}
+\end{table}
+%\ANNOT{Modifier la dernière phrase car au contraire, c'est l'extension des voisinages, plus éloignée des ACs, qui perd de son intérêt}
 
 %distance à la situation initiale ? 
 
@@ -611,16 +611,15 @@ utiliser un automate cellulaire perd de son intérêt.
 
 %assez peu de puissance de calcul : pas pu tester sur de plus grands nombres... améliorations passent-elles à l'échelle ?
 
+On est parvenu à une formulation cellulaire du problème de la factorisation à l'aide de la multiplication binaire. Étudier expérimentalement le comportement du système a également permis d'identifier des améliorations intéressantes. On peut aussi noter que les nombres difficiles à factoriser avec cet algorithme sont différents des nombres difficiles à factoriser avec les algorithmes usuels. Enfin, on a pu démontrer l'atteignabilité des solutions à partir d'une position de départ quelconque. Cependant, pour des raisons de puissance de calcul, il a été impossible de faire des tests statistiquement significatifs sur de plus grands nombres : il est difficile d'estimer la complexité de l'algorithme ou même de savoir à quel point il passe à l'échelle.
 
-
-...
-\ANNOT{Faire ressortir les points suivants : 
-  \begin{itemize}
-  \item Formulation cellulaire du problème
-  \item démonstration de l'atteignabilité de la solution
-  \item étude expérimentale du comportement 
-  \end{itemize}
-}
+% \ANNOT{Faire ressortir les points suivants : 
+%   \begin{itemize}
+%   \item Formulation cellulaire du problème
+%   \item démonstration de l'atteignabilité de la solution
+%   \item étude expérimentale du comportement 
+%   \end{itemize}
+% }
 
 
 %%% Local Variables:
