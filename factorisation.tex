@@ -348,14 +348,6 @@ Du fait de l'existence de mouvements spontanés, il n'y a pas de point fixe à p
 
 On cherche ici à montrer que la solution est accessible à partir de toute configuration initiale valide en appliquant uniquement les règles de $\Gamma$. On va en fait montrer un résultat un peu plus général : en appliquant les règles de $\Gamma$, il est possible de passer d'une matrice quelconque à n'importe quelle autre matrice de même somme. On suppose fixée la taille des matrices considérées, mais on ne la suppose pas nécessairement égale à celle qu'on utilise dans l'algorithme : cette généralisation permet d'adapter la preuve à des améliorations de l'algorithme.
 
-\begin{df*}
-Pour toutes matrices~$A$ et~$B$, on a $A\sim B$ si et seulement si on peut passer de~$A$ à~$B$ en appliquant des transformations de $\Gamma$.
-\end{df*}
-
-Remarquons que $\sim$ est une relation d'équivalence (la symétrie vient du fait que toutes les règles de $\Gamma$ ont un inverse, donc tous les mouvements sont réversibles).
-
-
-
 \begin{floatingfigure}[r]{.5\textwidth}
 %\begin{figure}[hbt]
 \centering
@@ -369,28 +361,35 @@ Remarquons que $\sim$ est une relation d'équivalence (la symétrie vient du fai
 %\end{matrix}
 %\]
 %\end{tikzpicture}
-
 \scalebox{0.3}{\subimport{.}{figdiag.pdf_t}}
-
+\vspace{-.5em}
 \caption{Signification des coefficients $b_i$.}
 \label{fig:diags}
 %\end{figure}
 \end{floatingfigure}
+
+\begin{df*}
+Pour toutes matrices~$A$ et~$B$, on a $A\sim B$ si et seulement si on peut passer de~$A$ à~$B$ en appliquant des transformations de $\Gamma$.
+\end{df*}
+
+Remarquons que $\sim$ est une relation d'équivalence (la symétrie vient du fait que toutes les règles de $\Gamma$ ont un inverse, donc tous les mouvements sont réversibles).
+
 Pour toute  matrice~$M$, on numérote  ses diagonales descendantes  en commençant
 à~$0$ par celle réduite au coin supérieur droit (cf Fig.~\ref{fig:diags}), et on
 note $b_i$ le nombre de coefficients  égaux à~$1$ sur la diagonale~$i$, de sorte
-que \linebreak  \mbox{$\sigma (M) = \sum\limits_ib_i2^i$}. On  constate que deux
-matrices  ayant  les mêmes  coefficients  $b_i$  pour  \linebreak tout~$i$  sont
-équivalentes  pour  $\sim$ (en  fait,  on  peut passer  de  l'une  à l'autre  en
-utilisant uniquement les règles \textbf{R1} et \textbf{R2}). On note de plus~$r$
-le nombre de diagonales descendantes de  la matrice (si la matrice est de taille
-$n\times p$, alors $r  = n+p+1$). Enfin, pour tout $0\leq i  < r$, on note $t_i$
-la taille de la~$i$-ème diagonale et l'on a $0\leq b_i \leq t_i$.
+que  \mbox{$\sigma (M) =  \sum\limits_ib_i2^i$}. On  constate que  deux matrices
+ayant les mêmes  coefficients $b_i$ pour tout~$i$ sont  équivalentes pour $\sim$
+(en fait, on  peut passer de l'une à l'autre en  utilisant uniquement les règles
+\textbf{R1}  et \textbf{R2}).   On  note  de plus~$r$  le  nombre de  diagonales
+descendantes de la matrice (si la matrice  est de taille $n\times p$, alors $r =
+n+p+1$).  Enfin, pour tout $0\leq i <  r$, on note $t_i$ la taille de la~$i$-ème
+diagonale et l'on a $0\leq b_i \leq t_i$.
  
 On va montrer que pour tout~$N$, toute matrice de somme~$N$ est équivalente pour $\sim$ à une certaine matrice qui contient un nombre minimal de~$1$.
 
 Soit  donc $N  \in  \N$,~$m$ le  nombre  minimal de~$1$  que  doit contenir  une
-matrice~$M$   de  somme~$N$.    Soit~$M$  une   telle  matrice.    Elle  vérifie
+matrice~$M$   de  somme~$N$.    
+Soit~$M$  une   telle  matrice.    Elle  vérifie
 néces\-saire\-ment, pour tout $i<r-1$,  $b_i \leq 1$ ou $b_{i+1}=t_{i+1}$, sinon
 on  pourrait   appliquer  les  règles   \textbf{R1}  et  \textbf{R2}   dans  les
 diagonales~$i$ et $i+1$, puis une fois  la règle \textbf{R4} et se ramener à une
@@ -406,12 +405,11 @@ pour~$\sim$. Notons, pour tout~$i$, $b'_i$ le nombre de coefficients égaux à~$
 sur la~$i$-ème  diagonale de $M'$. Il  existe également $k'$ tel  que $b'_{k'} <
 t_{k'}$, pour  tout $i<k'$, $b'_i  \leq 1$ et  pour tout $i>k'$,  $b'_i=t_i$. Si
 $k'<k$, alors pour tout $i>k$, $b_i= b'_i$ donc :
-
+\vspace{-1em}
 %\begin{align*}
 %something\\
 %something else
 %\end{align*}
-
 \begin{equation*}
   \sum\limits_{i=0}^{r-1}b_i 2^i = N = \sum\limits_{i=0}^{r-1}b'_i 2^i
   \quad\text{, ce qui implique}\quad \sum\limits_{i=0}^k b_i 2^i = \sum\limits_{i=0}^k b'_i 2^i
@@ -441,26 +439,7 @@ Toutes les matrices de même somme sont donc équivalentes pour $\sim$, donc on 
 %\ANNOT{Ajouter un bref contexte expérimental (type ordi, OS, langage développement)}
 Comme pour le problème des $n$ reines, on a implémenté l'algorithme en Ocaml et effectué des expérimentations sur une machine personnelle.
 
-Les  performances   varient  grandement  selon   l'entier  à  factoriser   :  sa
-dé\-composition  en  facteurs premiers,  et  plus  généralement la  distribution
-de~$1$ dans la ou les  solutions semblent être des facteurs déterminants. Ainsi,
-les nombres les plus faciles semblent être ceux qui ont le plus de diviseurs, ce
-qui  s'explique  par  le fait  que  plus  de  solutions  existent pour  de  tels
-nombres. Si on ne s'intéresse qu'aux nombres qui sont le produit de deux nombres
-premiers,  les  nombres  pour  lesquelles  les matrices  solutions  du  problème
-comportent  peu de~$1$  semblent les  plus difficiles  : l'algorithme  trouve en
-$10^6$ itérations en moyenne  un diviseur de  $493$ ($ = 17\times  29$), mais
-pour factoriser $362$ ($  = 2\times 181$), il lui faut $10^9$  étapes ! Ceci est
-dû au fait que la densité de~$1$  varie très peu au cours du temps (elle oscille
-autour d'une densité moyenne, et les solutions pour lesquelles la densité finale
-en est éloignée sont difficiles à trouver). Les nombres difficiles à factoriser sont donc différents des nombres qui posent problèmes aux algorithmes classiques \cite{Pom96}.
-
-De plus, les conditions que l'on s'est donné pour appliquer les règles tendent à chasser les zéros menacés, mais rien ne pousse particulièrement les~$1$ isolés à se déplacer. Il est donc relativement difficile de trouver les positions pour lesquelles les~$1$ sont tous à un endroit précis de la matrice : ainsi, pour les nombres de la forme $2^kp$ avec~$p$ premier, la matrice aura tous ses~$1$ sur la même ligne (la~$k$-ième) ou bien sur la même diagonale. Ainsi, dans les cas ``faciles'' tels que $493$, une solution est atteinte environ $40$ fois plus vite avec $p=0.05$ qu'avec $p=1$ (cas où le système applique des règles valides sans tenir compte du caractère dangereux ou sûr des cases), mais dans les cas difficiles tels que $362$, les performances sont plutôt meilleures avec la marche aléatoire $p=1$. Plus généralement, l'évolution du système n'est dirigée que faiblement, notamment parce qu'on a décidé de ne pas restreindre les déplacements de zéros vers des cases dangereuses et parce que le système n'a pas de mémoire.
-
-Le fait que les~$1$ isolés ne soient pas encouragés à se déplacer est d'autant plus gênant qu'on a choisi une taille de matrice nécessairement trop grande pour les facteurs que l'on va trouver. En effet, on a pris une matrice de taille $n-1 \times \lceil \frac{n}{2} \rceil$ pour un nombre de taille~$n$ afin d'assurer de pouvoir trouver n'importe quel diviseur non trivial, mais la somme des longueurs des deux facteurs que l'on va trouver est au plus~$n+1$. Par conséquent, tous les~$1$ d'une matrice solution sont contenus dans un rectangle dont l'un des sommets est le coin supérieur droit et dont le périmètre est limité : s'il y a un~$1$ dans le coin inférieur droit, il ne peut y en avoir aucun dans toute la moitié gauche de la matrice ! Si, dans une exécution de l'algorithme, aucun~$1$ n'apparaît typiquement dans le quart inférieur gauche pour~$p$ assez petit, il y en a fréquemment à la fois dans le coin supérieur gauche et inférieur droit, ce qui fait perdre beaucoup de temps. 
-
-
-\begin{figure}[hbt]
+\begin{floatingfigure}[r]{.6\textwidth}
   \centering
   \begin{tikzpicture}
   \begin{axis}[%
@@ -477,7 +456,7 @@ Le fait que les~$1$ isolés ne soient pas encouragés à se déplacer est d'auta
         /pgf/number format/precision=5,
         inner sep=0pt, anchor=north east, rotate=45 },
       legend entries = {221, 247, 319, 377, 403, 493},
-      legend style = {at={(1.3,0.5)}, anchor=east}]
+      legend style = {at={(1.26,0.5)}, anchor=east}]
       \addplot coordinates {
         (0.001, 4.3e5) (0.01, 1.6e5) (0.05, 2.4e5) (0.1, 2.4e5) %(0.2, 4.6e5)
       }; 
@@ -496,14 +475,45 @@ Le fait que les~$1$ isolés ne soient pas encouragés à se déplacer est d'auta
       \addplot coordinates {
         (0.001, 5.5e5) (0.01, 5.1e5) (0.05, 8.6e5) (0.1, 1.7e6) %(0.2, 3.6e6)
       }; 
-
     %\addlegendentry{Temps de convergence}
-        
   \end{axis}
   \end{tikzpicture}
+  \vspace{-2em}
   \caption{Temps de convergence moyen en fonction de~$N$ et~$p$ (échelle logarithmique).}
   \label{fig:p_ag}
-\end{figure}  
+\end{floatingfigure}  
+
+Les performances  (cf Fig.~\ref{fig:p_ag})  varient grandement selon  l'entier à
+factoriser :  sa dé\-composition en  facteurs premiers, et plus  généralement la
+distribution  de~$1$  dans  la  ou  les solutions  semblent  être  des  facteurs
+déterminants. Ainsi, les nombres les plus  faciles semblent être ceux qui ont le
+plus de diviseurs, ce qui s'explique  par le fait que plus de solutions existent
+pour de tels nombres. Si on ne s'intéresse qu'aux nombres qui sont le produit de
+deux nombres  premiers, les  nombres pour lesquelles  les matrices  solutions du
+problème  comportent peu  de~$1$  semblent les  plus  difficiles :  l'algorithme
+trouve en $10^6$ itérations en moyenne  un diviseur de $493$ ($ = 17\times 29$),
+mais pour factoriser $362$ ($ = 2\times  181$), il lui faut $10^9$ étapes ! Ceci
+est dû  au fait que  la densité de~$1$  varie très peu  au cours du  temps (elle
+oscille  autour d'une  densité  moyenne,  et les  solutions  pour lesquelles  la
+densité  finale  en  est  éloignée  sont  difficiles  à  trouver).  Les  nombres
+difficiles à  factoriser sont donc  différents des nombres qui  posent problèmes
+aux algorithmes classiques \cite{Pom96}.
+
+De plus, les conditions que l'on s'est donné pour appliquer les règles
+\linebreak tendent à chasser les zéros menacés, mais rien ne pousse
+particulièrement les~$1$ isolés à se déplacer. Il est donc relativement
+difficile de trouver les positions pour lesquelles les~$1$ sont tous à un
+endroit précis de la matrice : ainsi, pour les nombres de la forme $2^kp$
+avec~$p$ premier, la matrice aura tous ses~$1$ sur la même ligne (la~$k$-ième)
+ou bien sur la même diagonale. Ainsi, dans les cas ``faciles'' tels que $493$,
+une solution est atteinte environ $40$ fois plus vite avec $p=0.05$ qu'avec
+$p=1$ (cas où le système applique des règles valides sans tenir compte du
+caractère dangereux ou sûr des cases), mais dans les cas difficiles tels que
+$362$, les performances sont plutôt meilleures avec la marche aléatoire
+$p=1$. Plus généralement, l'évolution du système n'est dirigée que faiblement,
+notamment parce qu'on ne restreint pas les déplacements de zéros vers des cases dangereuses et parce que le système n'a pas de mémoire.
+
+Le fait que les~$1$ isolés ne soient pas encouragés à se déplacer est d'autant plus gênant qu'on a choisi une taille de matrice nécessairement trop grande pour les facteurs que l'on va trouver. En effet, on a pris une matrice de taille $n-1 \times \lceil \frac{n}{2} \rceil$ pour un nombre de taille~$n$ afin d'assurer de pouvoir trouver n'importe quel diviseur non trivial, mais la somme des longueurs des deux facteurs que l'on va trouver est au plus~$n+1$. Par conséquent, tous les~$1$ d'une matrice solution sont contenus dans un rectangle dont l'un des sommets est le coin supérieur droit et dont le périmètre est limité : s'il y a un~$1$ dans le coin inférieur droit, il ne peut y en avoir aucun dans toute la moitié gauche de la matrice ! Si, dans une exécution de l'algorithme, aucun~$1$ n'apparaît typiquement dans le quart inférieur gauche pour~$p$ assez petit, il y en a fréquemment à la fois dans le coin supérieur gauche et inférieur droit, ce qui fait perdre beaucoup de temps. 
 
 \section{Quelques améliorations}
 
@@ -572,10 +582,10 @@ cellules situées sur  la même diagonale descendante. De  même, on peut rempla
 les  règles \textbf{R3} et  \textbf{R5} par  une règle  qui consiste  à échanger
 un~$1$ d'une diagonale  contre deux sur la diagonale à sa  droite, et les règles
 \textbf{R4} et  \textbf{R6} par une règle  qui consiste à  échanger un~$0$ d'une
-diagonale  contre deux  sur la  diagonale à  sa droite.  Les  transformations du
-système sont ainsi  plus équitables au sens où on  peut maintenant atteindre, en
-appliquant  une  seule  règle,  des  positions  qu'on  ne  pouvait  précédemment
-atteindre que par une séquence précise de transformations locales.
+diagonale  contre deux sur  la diagonale  à sa  droite.  Les  transformations du
+système sont  ainsi plus équitables  puisque l'on peut maintenant  atteindre, en
+appliquant  une seule  règle, des  positions précédemment  atteignables  par une
+séquence précise de transformations locales.
 
 L'effet de ce  changement sur les performances est mitigé :  dans la plupart des
 cas, on constate une amélioration de  l'ordre de $40\%$, mais dans certains cas,
@@ -586,27 +596,26 @@ paralléliser  les calculs comme  on l'a  envisagé dans  la section  précéden
 \begin{table}[htb]
   \centering
   \begin{tabular}{r|c|c|c|c}
-    & algo    & taille des       & et informations  & et déplacements \\
-    $ N$ & initial & diviseurs connue & purement locales & globaux\\
+                          & algo    & taille des       & et informations  & et déplacements \\
+    $ N$                  & initial & diviseurs connue & purement locales & globaux         \\
     \hline
-    \rule{0pt}{3ex}   221     & 1\e{6}  & 8\e{4}       &  6\e{4} & 4\e{4} \\
-    403                       & 8\e{4}  & 1\e{4}       & 8\e{3}&  6\e{3}\\ 
-    493                       & 5\e{5}  & 1\e{5}       &1\e{5}&  1\e{5}\\
-   635                       & $>10^9$ & 3\e{5}       &4\e{5}&  2\e{5}\\
-   893                       & 3\e{6}  & 2\e{5}      & 3\e{5}&  2\e{5}\\
-    899                       & 1\e{6}  & 8\e{3}      & 9\e{3}&  5\e{3}\\
-    901                       & 2\e{7}  & 3\e{6}      & 3\e{6}&  3\e{7}\\
-    923                       & $>10^9$ & 3\e{5}&2\e{5}&1\e{5}
+    \rule{0pt}{3ex}   221 & 1\e{6}  & 8\e{4}           & 6\e{4}           & 4\e{4}          \\
+    403                   & 8\e{4}  & 1\e{4}           & 8\e{3}           & 6\e{3}          \\ 
+    493                   & 5\e{5}  & 1\e{5}           & 1\e{5}           & 1\e{5}          \\
+   635                    & $>10^9$ & 3\e{5}           & 4\e{5}           & 2\e{5}          \\
+   893                    & 3\e{6}  & 2\e{5}           & 3\e{5}           & 2\e{5}          \\
+    899                   & 1\e{6}  & 8\e{3}           & 9\e{3}           & 5\e{3}          \\
+    901                   & 2\e{7}  & 3\e{6}           & 3\e{6}           & 3\e{7}          \\
+    923                   & $>10^9$ & 3\e{5}           & 2\e{5}           & 1\e{5}
   \end{tabular}
   \caption{Temps moyen mis pour atteindre une solution (en nombre d'étapes).}
   \label{fig:fixedlengths}
 \end{table}
 %\ANNOT{Modifier la dernière phrase car au contraire, c'est l'extension des voisinages, plus éloignée des ACs, qui perd de son intérêt}
-
 %distance à la situation initiale ? 
-
 %TODO : comparatif entre fact_fixed_lengths et fact_global
 
+\vspace{-1.5em}
 \section*{Bilan}
 
 %assez peu de puissance de calcul : pas pu tester sur de plus grands nombres... améliorations passent-elles à l'échelle ?
