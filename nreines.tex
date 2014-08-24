@@ -77,7 +77,8 @@ On pose $\Ne \subset \La^2$ l'ensemble des paires de cellules adjacentes : $$(c,
 
 À chaque pas de temps, on choisit au hasard une paire de cases adjacentes et on les met à jour l'une par rapport à l'autre.
 On se donne donc $(u_t)_{t\in\N} \in \Ne^\N$ la suite des paires de cellules mises à jour : pour tout $t\in\N$, la paire de cellules mises à jour à l'étape~$t$ est $u_t$. Ce sont les valeurs d'une suite de variables aléatoires indépendantes à distribution uniforme sur $\Ne$. On définit de même $(x_t)_{t\in\N}$ la suite des configurations prises par le système au cours du temps. Initialement, aucun signal n'est présent et les~$n$ reines sont réparties aléatoirement sur l'échiquier, selon une loi uniforme (de façon indépendante : notamment plusieurs reines peuvent se trouver initialement sur la même case). 
-On cherche à définir une fonction de mise à jour globale $\mathcal{F} : {\E\times\Ne}\to\E$ qui à une configuration associe une configuration qui lui succède selon la procédure de la partie précédente : \mbox{$\mathcal{F}(x_t, u_t) = x_{t+1}$}.
+On cherche à définir une fonction de mise à jour globale $\mathcal{F} : {\E\times\Ne}\to\E$ qui à une configuration associe une configuration qui lui succède : \mbox{$\mathcal{F}(x_t, u_t) = x_{t+1}$}.
+On va introduire deux fonctions de mise à jour, l'une pour les signaux et l'autre pour les déplacements de reine, telles que $\mathcal{F}$ soit leur composée.
 
 %Initialement, aucun signal n'est présent.
 % et les~$n$ reines sont réparties aléatoirement sur l'échiquier, selon une loi uniforme (de façon indépendante : notamment plusieurs reines peuvent se trouver initialement sur la même case). 
@@ -177,7 +178,7 @@ Formalisons cette procédure à l'aide de quelques fonctions auxiliaires :
   \item On pose $\Ss : {\La}\to\{0,1\}$ qui indique si une reine peut rester sur une case donnée : \[
  \Ss(c) =
   \begin{cases} 
-      \hfill 1    \hfill & \text{ si $n_c\leq 1$ et $\forall d \in \D, s_c(d)=0$} \\
+      \hfill 1    \hfill & \text{ si $n_c\leq 1$ et $\forall d \in \D, s_{c,d}=0$} \\
       \hfill 0 \hfill & \text{ sinon} \\
   \end{cases}
 \]
@@ -185,7 +186,7 @@ Formalisons cette procédure à l'aide de quelques fonctions auxiliaires :
   \item On pose $\Sg :  {\La\times\D}\to\{0,1\}$ qui indique si une reine peut se déplacer de façon sûre vers une certaine case en venant d'une certaine direction : \[
  \Sg(c, d_{\mathrm {from}}) =
   \begin{cases} 
-      \hfill 1    \hfill & \text{ si $n_c=0$ et $\forall d \in \D\setminus\{d_{\mathrm{from}}\}, s_c(d)=0$} \\
+      \hfill 1    \hfill & \text{ si $n_c=0$ et $\forall d \in \D\setminus\{d_{\mathrm{from}}\}, s_{c,d}=0$} \\
       \hfill 0 \hfill & \text{ sinon} \\
   \end{cases}
 \]
@@ -392,7 +393,7 @@ Le paramètre $\varepsilon$ a des effets multiples. Plus $\varepsilon$ est grand
 
 Le choix de $\varepsilon$ pour minimiser le temps mis par le système pour trouver une solution relève donc d'un compromis entre ces différents effets : on le voudrait petit pour privilégier les déplacements sûrs et déplacer les reines à partir d'informations valides, mais grand pour que les déplacements soient suffisamment fréquents.
 
-La Figure~\ref{fig:convmoy} représente la variation du temps de convergence (le nombre de mises à jour avant d'atteindre une solution) et du nombre de déplacements effectifs de reine en fonction de la probabilité $\varepsilon$, dans le cas $n=8$. Les valeurs sont des moyennes sur $100$ échantillons, sauf les deux points extrémaux où l'on s'est restreint à $30$ échantillons pour des raisons de temps de calcul. On observe un optimum de $\varepsilon$ pour ce qui est du temps de convergence, autour de $0.01$, tandis que le nombre de déplacements croît avec $\varepsilon$ sur les valeurs considérées. 
+La Figure~\ref{fig:convmoy} représente la variation du temps de convergence (le nombre de mises à jour avant d'atteindre une solution) et du nombre de déplacements effectifs de reines en fonction de la probabilité $\varepsilon$, dans le cas $n=8$. Les valeurs sont des moyennes sur $100$ échantillons, sauf les deux points extrémaux où l'on s'est restreint à $30$ échantillons pour des raisons de temps de calcul. 
 
 \begin{figure}[htb]
   \centering
@@ -449,6 +450,7 @@ La Figure~\ref{fig:convmoy} représente la variation du temps de convergence (le
   \label{fig:convmoy}
 \end{figure}   
 
+On observe un optimum de $\varepsilon$ pour ce qui est du temps de convergence, autour de $0.01$, tandis que le nombre de déplacements croît avec $\varepsilon$ sur les valeurs considérées. 
 La monotonie apparente du nombre de déplacements en fonction de $\varepsilon$ n'est pas étonnante : diminuer $\varepsilon$ revient à augmenter la qualité des déplace\-ments (plus souvent vers des cases sûres, avec des informations plus à jour) quitte à ce qu'ils aient lieu moins fréquemment.
 
 %Un début d'explication à l'existence d'un optimum pour $\varepsilon$ est le fait que sa valeur est un compromis entre le besoin de sortir de situations bloquées (on a besoin de $\varepsilon$ grand) et celui de privilégier les cases sûres pour se diriger vers une solution (il faudrait $\varepsilon$ petit). En effet, plus $\varepsilon$ est grand, plus les reines ont tendance à se déplacer alors que les modifications récentes aux signaux n'ont pas été propagées, donc à se déplacer à partir d'informations erronées.
@@ -525,7 +527,7 @@ problème présente  la même irrégularité.
 
 \section{Un autre algorithme}
 
-Le modèle précédent ne passe pas très bien à l'échelle : obtenir une solution pour des tailles supérieures à $12$ peut s'avérer très long. On va donc envisager un nouveau modèle dans lequel plus d'informations sont prises en compte à chaque étape de calcul. L'objectif est que l'évolution du système soit plus dirigée que précédemment, tout en se restreignant encore à des règles de mise à jour locales. Plutôt que de choisir une paire de cases à chaque pas de temps et ne considérer que les informations contenues dans ces deux cases, on va mettre à jour une case par pas de temps, en utilisant les informations de toutes ses voisines. 
+Le modèle précédent ne passe pas très bien à l'échelle : obtenir une solution pour des tailles supérieures à $12$ peut s'avérer très long. On va donc envisager un nouveau modèle dans lequel plus d'informations sont prises en compte à chaque étape de calcul. L'objectif est que l'évolution du système soit plus dirigée que précédemment, tout en se restreignant encore à des règles de mise à jour locales. Plutôt que de choisir une paire de cases à chaque pas de temps et ne considérer que les informations contenues dans ces deux cases, on va mettre à jour les signaux d'une case par pas de temps, en utilisant les informations de toutes ses voisines. 
 
 On utilise le même système de signaux que dans l'algorithme précédent, avec le même espace d'états : $\mathcal{Q} = {\mathcal{P}^8}\times\N$. On pose, pour tout $c\in\La$, $\V_c\subset\La$ l'ensemble des cellules voisines de~$c$ : $\V_c = \{c' \in \La, \norm{(c-c')}_\infty = 1\}$.
 À chaque pas de temps, on choisit une case au hasard, on met à jour ses signaux par rapport aux cellules voisines, et une reine quitte éventuellement la case. 
@@ -547,7 +549,7 @@ On aimerait toujours envoyer une reine  menacée de~$c$ vers une cellule de $V_c
 qui minimise $\omega$, mais il existe des positions pour lesquelles un tel choix
 déterministe ne  permet pas de résoudre  le problème.  Ainsi, la  position de la
 Figure~\ref{fig:echiquier2}, avec  les signaux convenablement  propagés (ie. une
-case porte un signal  venant d'une certaine direction si et seulement  si il y a
+case porte un signal  venant d'une certaine direction si et seulement s'il y a
 effectivement une reine  dans cette direction), est une  position insoluble.  En
 effet, en partant de cette position, on peut vérifier que les reines en a3 et b3
 resteront dans le  triangle rouge alors que les autres  reines, non menacées, ne
@@ -672,7 +674,7 @@ similaires pour $n=8$.
 % %\end{figure}
 % \end{floatingfigure}
 
-On est parvenu à élaborer un automate cellulaire qui résout le problème des $n$ reines. Les performances, en temps de calcul, sont cependant  bien inférieures à une simple recherche en profondeur, bien que le caractère purement local des interactions entre cellules permette d'envisager de paralléliser cet algorithme de manière efficace. Par ailleurs, l'utilisation du hasard permet de conserver des règles locales relativement simples tout en assurant l'accessibilité des solutions. Enfin, on tire de ce problème des enseignements utiles pour la suite : les con\-train\-tes à propager qui apparaissent dans le problème de la factorisation  peuvent se traduire de manière assez analogue aux signaux transmis par les cellules de ce modèle en utilisant les propriétés de la multiplication binaire.
+On est parvenu à élaborer un automate cellulaire qui résout le problème des $n$ reines. Les performances, en temps de calcul, sont cependant  bien inférieures à une simple recherche en profondeur, bien que le caractère purement local des interactions entre cellules permette d'envisager de paralléliser cet algorithme de manière efficace. Par ailleurs, l'utilisation du hasard permet de conserver des règles locales relativement simples tout en assurant l'accessibilité des solutions. Enfin, on tire de ce problème des enseignements qui pourraient s'avérer utiles pour la suite : on peut envisager de traduire les con\-train\-tes à propager qui apparaissent dans le problème de la factorisation de manière assez analogue aux signaux transmis par les cellules de ce modèle en utilisant les propriétés de la multiplication binaire.
 
 % En  effet, les  termes de  l'addition binaire  doivent respecter  une contrainte
 % globale :  les lignes non-nulles sont toutes  égales (à la translation  due à la

@@ -6,7 +6,7 @@
 % }
 
 
-On cherche un système dynamique discret qui, étant donné un entier non-premier, trouve un de ses diviseurs non-triviaux. On se base sur la multiplication binaire. En effet, on observe qu'une matrice à coefficients dans $\{0,1\}$ peut s'interpréter comme une multiplication binaire si ses lignes non-nulles sont égales entre elles, comme illustré dans la Figure~\ref{fig:ExShift}. Les colonnes non-nulles sont alors aussi égales entre elles, et les deux facteurs de la multiplication sont alors lisibles, en base~$2$, sur les lignes non-nulles pour l'un, et de bas en haut sur les colonnes non-nulles pour l'autre. Si on pose leur multiplication, toujours en base~$2$, on retrouve en effet la matrice de départ décalée d'un cran par ligne vers la gauche (cf. Figure~\ref{fig:ExShift}).
+On cherche un système dynamique discret qui, étant donné un entier non premier, trouve un de ses diviseurs non-triviaux. On se base sur la multiplication binaire. En effet, on observe qu'une matrice à coefficients dans $\{0,1\}$ peut s'interpréter comme une multiplication binaire si ses lignes non-nulles sont égales entre elles, comme illustré dans la Figure~\ref{fig:ExShift}. Les colonnes non-nulles sont alors aussi égales entre elles, et les deux facteurs de la multiplication sont alors lisibles, en base~$2$, sur les lignes non-nulles pour l'un, et de bas en haut sur les colonnes non-nulles pour l'autre. Si on pose leur multiplication, toujours en base~$2$, on retrouve en effet la matrice de départ décalée d'un cran par ligne vers la gauche (cf. Figure~\ref{fig:ExShift}).
 
 
 
@@ -75,11 +75,11 @@ $\sigma(M)=$&1&0&0&0&1&1&1&1&143\\
 % \label{fig:ExSigma}
 % \end{figure}
 
-L'idée est donc de partir d'une matrice à coefficients dans $\{0,1\}$ dont la somme vaut le nombre qu'on cherche à factoriser, et de lui appliquer des transformations qui préservent la somme comme invariant jusqu'à atteindre une matrice qui représente une multiplication. Ainsi, notre système n'a pas à vérifier que le produit de cette multiplication est l'entier à factoriser, ce qui simplifie considérablement sa conception.
+Il est donc envisageable de partir d'une matrice à coefficients dans $\{0,1\}$ dont la somme vaut le nombre qu'on cherche à factoriser, et de lui appliquer des transformations qui préservent la somme comme invariant jusqu'à atteindre une matrice qui représente une multiplication, c'est-à-dire une matrice dont les lignes non nulles sont égales. Ainsi, notre système n'a pas à vérifier que le produit de cette multiplication est l'entier à factoriser, ce qui simplifie considérablement sa conception. L'algorithme présenté par la suite se base sur cette idée.
 
 \section{Un algorithme}
 
-Soit~$n$ le nombre de chiffres en base~$2$ du nombre composé~$N$ dont on cherche un diviseur non-trivial. On se donne une matrice~$M$ de taille $ n-1 \times \lceil \frac{n}{2}\rceil$ de somme~$N$. Pour tous~$a$ et~$b$ différents de~$1$ et~$N$, et tels que $N = ab$,~$a$ ou~$b$ est de taille inférieure à $\lceil\frac{n}{2}\rceil$ et l'autre est de taille inférieure à $n-1$, on peut donc représenter leur multiplication à l'aide d'une matrice de la taille de~$M$. On l'initialise en recopiant les $n-1$ bits de poids faible de~$N$ sur la première ligne, et avec un~$1$ en position $(2,1)$ et des zéros partout ailleurs (cf. Figure \ref{fig:init}). On vérifie aisément que $\sigma(M)=N$. 
+Soit~$n$ le nombre de chiffres en base~$2$ du nombre composé~$N$ dont on cherche un diviseur non trivial. On se donne une matrice~$M$ de taille $ n-1 \times \lceil \frac{n}{2}\rceil$ de somme~$N$. Pour tous~$a$ et~$b$ différents de~$1$ et~$N$, et tels que $N = ab$,~$a$ ou~$b$ est de taille inférieure à $\lceil\frac{n}{2}\rceil$ et l'autre est de taille inférieure à $n-1$, on peut représenter leur multiplication à l'aide d'une matrice de la taille de~$M$. On l'initialise de manière déterministe, en recopiant les $n-1$ bits de poids faible de~$N$ sur la première ligne, et avec un~$1$ en position $(2,1)$ et des zéros partout ailleurs (cf. Figure \ref{fig:init}). On vérifie aisément que $\sigma(M)=N$. 
 
 
 \begin{figure}[h]
@@ -105,7 +105,7 @@ $\Rightarrow$
 \end{figure}
 
 Formellement, on pose $\La=\cg 1, n-1 \cd \times \cg 1, \lceil\frac{n}{2}\rceil\cd$ l'ensemble des cases de la matrice, et $\E=\{0,1\}^\La$ l'ensemble des configurations. Pour tout $x \in \E$, $(i,j)\in\La$, on note $x_{i,j}$ le coefficient $(i,j)$ de la matrice~$x$. 
-On se donne également un ensemble $\Gamma \subset \E^{\E\times\La}$ de transformations locales qui préservent l'invariant de somme. Elles sont représentées sur la Figure~\ref{fig:rules}, et s'appliquent aux coefficients indiqués en gras sous certaines conditions. Les règles \textbf{R5} et \textbf{R6} ne sont en fait pas nécessaires pour l'accessibilité des solutions : on les introduit par symétrie, pour ne pas privilégier de direction de déplacements des~$1$. 
+On se donne également un ensemble $\Gamma \subset \E^{\E\times\La}$ de transformations locales qui préservent l'invariant de somme. Elles sont représentées sur la Figure~\ref{fig:rules}, et s'appliquent aux coefficients indiqués en gras sous certaines conditions. Les règles \textbf{R5} et \textbf{R6} ne sont en fait pas nécessaires pour l'accessibilité des solutions : on les introduit par symétrie, pour ne pas privilégier de direction de déplacement des~$1$. 
 
 %On se donne donc un ensemble $\Gamma$ de six transformations locales qui conservent $\sigma$. Elles sont représentées sur la figure~$3$. Plus 
 
@@ -262,14 +262,15 @@ On se donne également un ensemble $\Gamma \subset \E^{\E\times\La}$ de transfor
 
 %À chaque pas de temps, on choisit au hasard une case et une transformation de $\Gamma$, et on décide si on applique ou non la transformation.
 
-Une  formulation  équivalente  de  l'égalité  des lignes  non-nulles  est  qu'un
-coefficient situé sur la même ligne qu'un  1 et sur la même colonne qu'un 1 vaut
-nécessairement 1 dans une matrice  qui représente une multiplication. On va donc
+On cherche à atteindre une matrice dont les lignes non nulles sont égales, ou de manière équivalente, telle qu'un coefficient situé sur la même ligne qu'un  1 et sur la même colonne qu'un 1 vaut
+nécessairement 1. On va donc
 appliquer  aléatoirement des  règles  conservant $\sigma$,  en privilégiant  les
 mouvements qui retirent les zéros de telles cases. Dans la suite, on dira qu'une
 case est \emph{sûre}  s'il n'y a pas de~$1$  sur la même ligne ou s'il  n'y en a
 pas sur la même  colonne, et \emph{dangereuse} s'il y a à  la fois un~$1$ sur la
-même ligne et un sur la même colonne.
+même ligne et un sur la même colonne. Cette façon de voir les choses est analogue au problème des $n$ reines, 
+à ceci près que les zéros sont repoussés par les $1$ plutôt que par les autres zéros.
+
 
 \begin{floatingfigure}[r]{0.5\textwidth}
 \centering
@@ -369,7 +370,7 @@ On cherche ici à montrer que la solution est accessible à partir de toute conf
 \end{floatingfigure}
 
 \begin{df*}
-Pour toutes matrices~$A$ et~$B$, on a $A\sim B$ si et seulement si on peut passer de~$A$ à~$B$ en appliquant des transformations de $\Gamma$.
+Pour toutes matrices~$A$ et~$B$, on a $A\sim B$ et on dit que A et B \emph{communiquent} si et seulement si on peut passer de~$A$ à~$B$ en appliquant des transformations de $\Gamma$.
 \end{df*}
 
 Remarquons que $\sim$ est une relation d'équivalence (la symétrie vient du fait que toutes les règles de $\Gamma$ ont un inverse, donc tous les mouvements sont réversibles).
@@ -378,14 +379,14 @@ Pour toute  matrice~$M$, on numérote  ses diagonales descendantes  en commença
 à~$0$ par celle réduite au coin supérieur droit (cf Fig.~\ref{fig:diags}), et on
 note $b_i$ le nombre de coefficients  égaux à~$1$ sur la diagonale~$i$, de sorte
 que  \mbox{$\sigma (M) =  \sum\limits_ib_i2^i$}. On  constate que  deux matrices
-ayant les mêmes  coefficients $b_i$ pour tout~$i$ sont  équivalentes pour $\sim$
+ayant les mêmes  coefficients $b_i$ pour tout~$i$ communiquent
 (en fait, on  peut passer de l'une à l'autre en  utilisant uniquement les règles
 \textbf{R1}  et \textbf{R2}).   On  note  de plus~$r$  le  nombre de  diagonales
 descendantes de la matrice (si la matrice  est de taille $n\times p$, alors $r =
 n+p+1$).  Enfin, pour tout $0\leq i <  r$, on note $t_i$ la taille de la~$i$-ème
 diagonale et l'on a $0\leq b_i \leq t_i$.
  
-On va montrer que pour tout~$N$, toute matrice de somme~$N$ est équivalente pour $\sim$ à une certaine matrice qui contient un nombre minimal de~$1$.
+On va montrer que pour tout~$N$, toute matrice de somme~$N$ communique avec une certaine matrice qui contient un nombre minimal de~$1$.
 
 Soit  donc $N  \in  \N$,~$m$ le  nombre  minimal de~$1$  que  doit contenir  une
 matrice~$M$   de  somme~$N$.    
@@ -430,7 +431,7 @@ b'_i = t_i$, donc on a  aussi $b_k = b'_k$ (car $\sum\limits_{i=0}^{r-1} b_i 2^i
 
 Soit donc~$A$ telle que $\sigma(A)=N$, et $A'$ la matrice avec le moins de~$1$ dans la classe d'équi\-valence de~$A$. Clairement $A \sim A'$, or on a vu $A'\sim M$ par minimalité de $A'$ dans sa classe d'équivalence. D'où par transitivité, $A \sim M$. Enfin, toujours par transitivité, si~$B$ est une autre matrice de somme~$N$, alors $B \sim M$ comme précédemment, donc $A \sim B$.
 
-Toutes les matrices de même somme sont donc équivalentes pour $\sim$, donc on peut passer de l'une à l'autre en appliquant des règles de $\Gamma$. En particulier, toute solution est accessible à partir de toute configuration initiale valide, c'est-à-dire de même somme. 
+Toutes les matrices de même somme communiquent donc, ce qui veut dire que l'on peut passer de l'une à l'autre en appliquant des règles de $\Gamma$. En particulier, toute solution est accessible à partir de toute configuration initiale valide, c'est-à-dire de même somme. 
 
 
 
@@ -499,13 +500,13 @@ densité  finale  en  est  éloignée  sont  difficiles  à  trouver).  Les  nom
 difficiles à  factoriser sont donc  différents des nombres qui  posent problèmes
 aux algorithmes classiques \cite{Pom96}.
 
-De plus, les conditions que l'on s'est donné pour appliquer les règles
+De plus, les conditions que l'on s'est données pour appliquer les règles
 \linebreak tendent à chasser les zéros menacés, mais rien ne pousse
 particulièrement les~$1$ isolés à se déplacer. Il est donc relativement
 difficile de trouver les positions pour lesquelles les~$1$ sont tous à un
 endroit précis de la matrice : ainsi, pour les nombres de la forme $2^kp$
 avec~$p$ premier, la matrice aura tous ses~$1$ sur la même ligne (la~$k$-ième)
-ou bien sur la même diagonale. Ainsi, dans les cas ``faciles'' tels que $493$,
+ou bien sur la même diagonale. Ainsi, dans le cas de $493$,
 une solution est atteinte environ $40$ fois plus vite avec $p=0.05$ qu'avec
 $p=1$ (cas où le système applique des règles valides sans tenir compte du
 caractère dangereux ou sûr des cases), mais dans les cas difficiles tels que
@@ -524,12 +525,12 @@ grande matrice, on suppose connue la  taille des diviseurs. Si~$n$ est la taille
 du nombre à  factoriser, il y a  au plus $4n-2$ tailles de  matrices possibles à
 essayer car la somme des  tailles des diviseurs vaut nécessairement~$n$ ou $n+1$
 et  on ignore  les  matrices dont  une  dimension vaut~$1$  car  on cherche  des
-diviseurs non-triviaux. On  lance donc en parallèle l'algorithme  sur les $4n-2$
+diviseurs non triviaux. On  lance donc en parallèle l'algorithme  sur les $4n-2$
 matrices différentes, et  on arrête l'exécution dès qu'une  solution est trouvée
 pour l'une  des tailles.  Quitte  à supposer impair  le nombre à  factoriser, on
 impose  de  plus  qu'il y  ait  un~$1$  à  chacun  des quatre  coins  (condition
 nécessairement vérifiée par  la matrice dont les dimensions  sont exactement les
-tailles de deux facteurs du nombre à factoriser).
+tailles de deux facteurs du nombre à factoriser). Le choix de la matrice de départ est déterministe : on prend une matrice avec un nombre de $1$ minimal telle que les coefficients aux quatre coins soient égaux à $1$.
 % (c'est une condition
 % nécessaire pour qu'une  matrice dont les dimensions sont  exactement les tailles
 % de deux  facteurs soit  solution :  chaque facteur commence  par un~$1$  car les
@@ -562,7 +563,7 @@ initial semble s'accentuer quand $N$ croît : cette amélioration semble permett
 
 \subsection{N'utiliser que des informations locales}
 
-Dans l'algorithme ci-dessus, on utilise des informations globales sur le système lorsqu'on décide si on applique une transformation : en effet, on décide si une case est sûre ou dangereuse en comptant les~$1$ sur la ligne et la diagonale concernées. On peut en fait ajuster l'algorithme pour se restreindre à utiliser uniquement des informations locales, en mettant en place un système de signaux analogue à celui utilisé pour le problème des~$n$ reines. 
+Dans l'algorithme ci-dessus, on utilise des informations globales sur le système lorsqu'on décide si on applique une transformation : en effet, on décide si une case est sûre ou dangereuse en comptant les~$1$ sur la ligne et la diagonale concernées. Quitte à y perdre en performance en terme de nombre d'étapes, on peut chercher à rendre l'algorithme mieux parallélisable en l'ajustant pour se restreindre à utiliser uniquement des informations locales, en mettant en place un système de signaux analogue à celui utilisé pour le problème des~$n$ reines. 
 
 On procède de la façon suivante : les cellules de la matrice, en plus de contenir un~$0$ ou un~$1$, peuvent contenir des signaux en provenance des quatre directions~$N$,~$S$,~$E$ et~$W$. On souhaite qu'un signal en provenance d'une certaine direction soit présent sur une cellule si et seulement s'il existe un coefficient égal à~$1$ dans cette direction. Ainsi, une case est dite \emph{sûre} si elle ne contient pas de signal en provenance du nord ni du sud, ou bien si elle ne contient pas de signal en provenance de l'ouest ni de l'est. Dans le cas contraire, elle est dite \emph{dangereuse}. On a ainsi traduit l'ancienne définition d'une cellule sûre (pas de~$1$ sur la même colonne, ou bien pas de~$1$ sur la même ligne) en terme de signaux.
 
