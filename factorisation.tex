@@ -272,6 +272,14 @@ même ligne et un sur la même colonne. Cette façon de voir les choses est anal
 à ceci près que les zéros sont repoussés par les $1$ plutôt que par les autres zéros.
 
 
+
+Pour diriger  les zéros vers  les cases sûres,  on voudrait n'effectuer  que des
+mouvements qui sortent un zéro d'une case dangereuse, mais cette restriction est
+trop forte : il existe  alors des situations bloquées, la Figure~\ref{fig:stuck}
+en  donne un  exemple.  Il est  donc  nécessaire d'autoriser  au moins  certains
+mouvements  qui ne  sont pas  directement utiles  en ce  sens. Par  ailleurs, on
+pourrait  vouloir   restreindre  les  mouvements   des  zéros  vers   des  cases
+dangereuses, de la même façon que pour le problème des~$n$ reines. 
 \begin{floatingfigure}[r]{0.5\textwidth}
 \centering
 \begin{tabular}{cccccccc}
@@ -284,13 +292,7 @@ même ligne et un sur la même colonne. Cette façon de voir les choses est anal
 \caption{Exemple de situation bloquée si on interdit les mouvements ne déplaçant pas les zéros menacés (encadrés) : aucune des règles de la Figure~\ref{fig:rules} ne s'applique à eux.}
 \label{fig:stuck}
 \end{floatingfigure}
-Pour diriger  les zéros vers  les cases sûres,  on voudrait n'effectuer  que des
-mouvements qui sortent un zéro d'une case dangereuse, mais cette restriction est
-trop forte : il existe  alors des situations bloquées, la Figure~\ref{fig:stuck}
-en  donne un  exemple.  Il est  donc  nécessaire d'autoriser  au moins  certains
-mouvements  qui ne  sont pas  directement utiles  en ce  sens. Par  ailleurs, on
-pourrait  vouloir   restreindre  les  mouvements   des  zéros  vers   des  cases
-dangereuses, de la même façon que pour le problème des~$n$ reines. Cependant, il
+Cependant, il
 se  forme alors  des blocs  stables de~$1$  : les  zéros qui  viennent remplacer
 un~$1$  au bord  du bloc  en  sont rapidement  éjectés (les  seules cases  sûres
 proches sont à l'extérieur du bloc).
@@ -349,7 +351,7 @@ Du fait de l'existence de mouvements spontanés, il n'y a pas de point fixe à p
 
 On cherche ici à montrer que la solution est accessible à partir de toute configuration initiale valide en appliquant uniquement les règles de $\Gamma$. On va en fait montrer un résultat un peu plus général : en appliquant les règles de $\Gamma$, il est possible de passer d'une matrice quelconque à n'importe quelle autre matrice de même somme. On suppose fixée la taille des matrices considérées, mais on ne la suppose pas nécessairement égale à celle qu'on utilise dans l'algorithme : cette généralisation permet d'adapter la preuve à des améliorations de l'algorithme.
 
-\begin{floatingfigure}[r]{.5\textwidth}
+\begin{floatingfigure}[r]{.3\textwidth}
 %\begin{figure}[hbt]
 \centering
 %\begin{tikzpicture}
@@ -362,7 +364,7 @@ On cherche ici à montrer que la solution est accessible à partir de toute conf
 %\end{matrix}
 %\]
 %\end{tikzpicture}
-\scalebox{0.3}{\subimport{.}{figdiag.pdf_t}}
+\scalebox{0.2}{\subimport{.}{figdiag.pdf_t}}
 \vspace{-.5em}
 \caption{Signification des coefficients $b_i$.}
 \label{fig:diags}
@@ -373,9 +375,7 @@ On cherche ici à montrer que la solution est accessible à partir de toute conf
 Pour toutes matrices~$A$ et~$B$, on a $A\sim B$ et on dit que A et B \emph{communiquent} si et seulement si on peut passer de~$A$ à~$B$ en appliquant des transformations de $\Gamma$.
 \end{df*}
 
-Remarquons que $\sim$ est une relation d'équivalence (la symétrie vient du fait que toutes les règles de $\Gamma$ ont un inverse, donc tous les mouvements sont réversibles).
-
-Pour toute  matrice~$M$, on numérote  ses diagonales descendantes  en commençant
+Remarquons que $\sim$ est une relation d'équivalence (la symétrie vient du fait que toutes les règles de $\Gamma$ ont un inverse, donc tous les mouvements sont réversibles). Pour toute  matrice~$M$, on numérote  ses diagonales descendantes  en commençant
 à~$0$ par celle réduite au coin supérieur droit (cf Fig.~\ref{fig:diags}), et on
 note $b_i$ le nombre de coefficients  égaux à~$1$ sur la diagonale~$i$, de sorte
 que  \mbox{$\sigma (M) =  \sum\limits_ib_i2^i$}. On  constate que  deux matrices

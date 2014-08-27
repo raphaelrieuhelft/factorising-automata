@@ -10,10 +10,19 @@ On se place sur un échiquier de  taille $n \times n$, sur lequel~$n$ reines son
 disposées. On dit qu'une reine est  \emph{menacée} si elle se trouve sur la même
 ligne,  colonne ou diagonale  qu'une autre  reine. On  cherche à  placer les~$n$
 reines de sorte qu'aucune reine ne soit menacée.
+\begin{floatingfigure}[r]{.5\textwidth}
+\centering
+\newgame
+\fenboard{7q/6q1/5q2/4q3/3q4/2q5/1q6/q7 b - - 0 1}
+\notationoff
+\showboard
+\caption{Les reines sont toutes menacées, mais aucun déplacement d'une case ne conduit à une case sûre.}
+\label{fig:blocage}
+\end{floatingfigure} 
 On va chercher,  en partant d'une situation initiale  quelconque, à déplacer les
 reines  de sorte à  atteindre une  position dans  laquelle aucune  d'elles n'est
-menacée. Pendant ces déplacements, on va  permettre à chaque case de contenir un
-nombre  quelconque de  reines simultanément,  et  aussi d'être  marquée par  des
+menacée. Pendant ces \linebreak déplace\-ments, on va  permettre à chaque case de contenir un
+nombre  quel\-conque de  reines simultanément,  et  aussi d'être  marquée par  des
 signaux  provenant  d'un nombre  quelconque  de  directions,  qui traduisent  la
 présence d'une reine dans la direction d'où ils proviennent. %
 % Notons  donc $\B$  l'ensemble $\{vrai,  faux\}$  des booléens.   On associe  à
@@ -28,15 +37,7 @@ présence d'une reine dans la direction d'où ils proviennent. %
 % dite \emph{dangereuse}.
 
 
-\begin{floatingfigure}[r]{.5\textwidth}
-\centering
-\newgame
-\fenboard{7q/6q1/5q2/4q3/3q4/2q5/1q6/q7 b - - 0 1}
-\notationoff
-\showboard
-\caption{Les reines sont toutes menacées, mais aucun déplacement d'une case ne conduit à une case sûre.}
-\label{fig:blocage}
-\end{floatingfigure} 
+
 On cherche une procédure de mise à jour locale telle qu'à chaque pas
 de temps, les états de certaines cases sont modifiés à partir d'informations sur
 les  cases voisines  :  création  et transmission  de  signaux, déplace\-ments  de
@@ -73,7 +74,7 @@ $\mathcal{P} = \{0,1\}$ et \linebreak $\D = \{NW,N,NE,W,E,SW,S,SE\}$ l'ensemble 
 Par souci de lisibilité, on omettra les indices~$x$ de configuration partout où on pourra le faire sans ambiguïté et on parlera de l'état $(s_c, n_c)$ d'une cellule~$c$.
 %La fonction $s_{x, c}$ associe à chaque direction~$1$ si~$c$ contient un signal en provenance de cette direction et~$0$ sinon, et~$c$ contient $n_{x, c}$ reines.
 
-On pose $\Ne \subset \La^2$ l'ensemble des paires de cellules adjacentes : $$(c, c') \in \Ne \iff \norm{(c-c')}_\infty = 1$$
+On pose $\Ne \subset \La^2$ l'ensemble des paires de cellules adjacentes : $(c, c') \in \Ne \iff \norm{(c-c')}_\infty = 1$.
 
 À chaque pas de temps, on choisit au hasard une paire de cases adjacentes et on les met à jour l'une par rapport à l'autre.
 On se donne donc $(u_t)_{t\in\N} \in \Ne^\N$ la suite des paires de cellules mises à jour : pour tout $t\in\N$, la paire de cellules mises à jour à l'étape~$t$ est $u_t$. Ce sont les valeurs d'une suite de variables aléatoires indépendantes à distribution uniforme sur $\Ne$. On définit de même $(x_t)_{t\in\N}$ la suite des configurations prises par le système au cours du temps. Initialement, aucun signal n'est présent et les~$n$ reines sont réparties aléatoirement sur l'échiquier, selon une loi uniforme (de façon indépendante : notamment plusieurs reines peuvent se trouver initialement sur la même case). 
@@ -376,9 +377,7 @@ L'asynchronisme de la mise à jour est utile : si on mettait les cases à jour d
 
 %\ANNOT{Ajouter un bref contexte expérimental (type ordi, OS, langage développement)}
 
-Lancé à partir d'une situation de départ aléatoire (la case de départ de chacune des~$n$ reines est choisie selon une loi uniforme de façon indépendante), on observe que le système finit par atteindre un point fixe où chaque reine est sur une case sans signal. La position des reines est alors solution du problème des~$n$ reines.
-
-Les expérimentations ont été effectuées à l'aide d'une implémentation en Ocaml, sur une machine personnelle : ce dernier point explique le manque de données pour de très grandes tailles, pour des raisons de puissance de calcul.
+Lancé à partir d'une situation de départ aléatoire (la case de départ de chacune des~$n$ reines est choisie selon une loi uniforme de façon indépendante), on observe que le système finit par atteindre un point fixe où chaque reine est sur une case sans signal. La position des reines est alors solution du problème des~$n$ reines. Les expérimentations ont été effectuées à l'aide d'une implémentation en Ocaml, sur une machine personnelle : ce dernier point explique le manque de données pour de très grandes tailles, pour des raisons de puissance de calcul.
 
 \subsection{Comportement qualitatif}
 
@@ -391,9 +390,9 @@ Les mouvements des reines sont rares par la suite : une fois les signaux convena
 
 Le paramètre $\varepsilon$ a des effets multiples. Plus $\varepsilon$ est grand, plus le système sort rapidement de situations bloquées où aucun déplacement vers une case sûre n'est possible. En revanche, plus il est petit, plus le système a tendance à effectuer tous les déplacements possibles vers des cases sûres avant de déplacer une reine vers une case dangereuse, ce qui peut empêcher de passer à côté d'une solution. En effet, si une solution est accessible sans avoir besoin de déplacer de reine vers une case dangereuse, plus $\varepsilon$ est grand, plus le risque de déplacer une reine vers une case dangereuse et d'avoir peu de chances de trouver rapidement cette solution est important. Enfin, comme il y a typiquement très peu de cases sûres, $\varepsilon$ contrôle également la fréquence des déplacements : plus il est petit, plus les signaux ont de temps pour se propager sur l'échiquier avant le prochain déplacement de reine. Ceci implique que plus $\varepsilon$ est petit, plus les reines se déplacent en se basant sur des informations à jour. Indirectement, $\varepsilon$ contrôle donc également le degré d'asynchronisme à retards du système. 
 
-Le choix de $\varepsilon$ pour minimiser le temps mis par le système pour trouver une solution relève donc d'un compromis entre ces différents effets : on le voudrait petit pour privilégier les déplacements sûrs et déplacer les reines à partir d'informations valides, mais grand pour que les déplacements soient suffisamment fréquents.
+Le choix de $\varepsilon$ pour minimiser le temps mis par le système pour trouver une solution relève donc d'un compromis entre ces différents effets : on le voudrait petit pour privilégier les déplacements sûrs et déplacer les reines à partir d'informations valides, mais grand pour que les déplacements soient suffisamment fréquents. On peut donc se demander s'il existe un optimum de $\varepsilon$ qui minimise le temps de convergence, ou si au contraire, l'un de ces effets l'emporte sur les autres au point qu'il est préférable que $\varepsilon$ vaille $0$ ou $1$.
 
-La Figure~\ref{fig:convmoy} représente la variation du temps de convergence (le nombre de mises à jour avant d'atteindre une solution) et du nombre de déplacements effectifs de reines en fonction de la probabilité $\varepsilon$, dans le cas $n=8$. Les valeurs sont des moyennes sur $100$ échantillons, sauf les deux points extrémaux où l'on s'est restreint à $30$ échantillons pour des raisons de temps de calcul. 
+La Figure~\ref{fig:convmoy} représente la variation du temps de convergence (le nombre de mises à jour avant d'atteindre une solution) et du nombre de déplacements effectifs de reines en fonction de la probabilité $\varepsilon$, dans le cas $n=8$. Les valeurs sont des moyennes sur $100$ échantillons, sauf les points extrémaux où l'on s'est restreint à $30$ échantillons pour des raisons de temps de calcul. 
 
 \begin{figure}[htb]
   \centering
@@ -450,7 +449,7 @@ La Figure~\ref{fig:convmoy} représente la variation du temps de convergence (le
   \label{fig:convmoy}
 \end{figure}   
 
-On observe un optimum de $\varepsilon$ pour ce qui est du temps de convergence, autour de $0.01$, tandis que le nombre de déplacements croît avec $\varepsilon$ sur les valeurs considérées. 
+On observe effectivement un optimum de $\varepsilon$ pour ce qui est du temps de convergence, autour de $0.01$, tandis que le nombre de déplacements croît avec $\varepsilon$ sur les valeurs considérées. 
 La monotonie apparente du nombre de déplacements en fonction de $\varepsilon$ n'est pas étonnante : diminuer $\varepsilon$ revient à augmenter la qualité des déplace\-ments (plus souvent vers des cases sûres, avec des informations plus à jour) quitte à ce qu'ils aient lieu moins fréquemment.
 
 %Un début d'explication à l'existence d'un optimum pour $\varepsilon$ est le fait que sa valeur est un compromis entre le besoin de sortir de situations bloquées (on a besoin de $\varepsilon$ grand) et celui de privilégier les cases sûres pour se diriger vers une solution (il faudrait $\varepsilon$ petit). En effet, plus $\varepsilon$ est grand, plus les reines ont tendance à se déplacer alors que les modifications récentes aux signaux n'ont pas été propagées, donc à se déplacer à partir d'informations erronées.
